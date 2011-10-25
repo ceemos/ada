@@ -7,17 +7,16 @@
 -----------------------------------------------------------------------
 
 with Ada.Text_IO, Ada.Strings.Unbounded, Ada.Strings.Unbounded.Text_IO;
-use Ada.Text_IO, Ada.Strings.Unbounded, Ada.Strings.Unbounded.Text_IO;;
+use Ada.Text_IO, Ada.Strings.Unbounded, Ada.Strings.Unbounded.Text_IO;
 procedure hallo_du is
-   name: Unbounded_String;
+   name: Unbounded_String; -- Name des Users
 begin
-   Put("Ihr Name?");
-   name := Get_Line();
-   Put("Hallo " );
+   Put_Line("Ihr Name?");
+   name := Get_Line;
+   
+   Put("Hallo " ); -- Ausgabe in einer Zeile
    Put(name);
    Put_Line("!");
-   
-   
 end hallo_du;
 
--- kate: indent-width 3; indent-mode normal;
+-- kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; line-numbers on; 
