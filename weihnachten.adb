@@ -54,6 +54,20 @@ procedure weihnachten is
       t := t + 1;
    end addiere_einen_Tag;
    
+   -- prueft, ob die uebergebenen Daten plausibel sind
+   function ist_gueltiges_datum(t, m, j: Natural) return boolean is
+   begin
+      return m >= 1 and m <= 12 -- Monatsbereich
+         and t >= 1 and -- Tagesbereich
+         (   ((m = 4 or m = 6 or m = 9  or m = 11) and t <= 30) -- 31-taeg. Mon.
+          or ((m = 1 or m = 3 or m = 5  or m = 7                -- 30-taeg. Mon.
+                     or m = 8 or m = 10 or m = 12) and t <= 31)
+          or ( m = 2 and     ist_schaltjahr(j) and t <= 29 ) -- Sonderfall Feb.
+          or ( m = 2 and not ist_schaltjahr(j) and t <= 28 )
+         );
+   end ist_gueltiges_datum;
+         
+   
    tag, monat, jahr: Natural;
    anzahl_Tage: Natural;
 begin
@@ -65,15 +79,20 @@ begin
    Put_Line("Geben Sie den Tag ein:");
    Get(tag);
    
-   anzahl_Tage := 0;
-   while not ist_weihnachten(tag, monat) loop
-      addiere_einen_Tag(tag, monat, jahr);
-      anzahl_Tage := anzahl_Tage + 1;
-   end loop;
+   if ist_gueltiges_datum(tag, monat, jahr) then
    
-   Put("Es verbleiben noch ");
-   Put(anzahl_Tage);
-   Put(" Tage bis Weihnachten."); 
+      anzahl_Tage := 0;
+      while not ist_weihnachten(tag, monat) loop
+         addiere_einen_Tag(tag, monat, jahr);
+         anzahl_Tage := anzahl_Tage + 1;
+      end loop;
+      
+      Put("Es verbleiben noch ");
+      Put(anzahl_Tage);
+      Put(" Tage bis Weihnachten."); 
+   else 
+      Put_Line("Wahrscheinlich wird Weihnachten nie erreicht.");
+   end if;
    
    
 end weihnachten;
