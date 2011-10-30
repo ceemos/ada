@@ -30,8 +30,48 @@ procedure for_schleifen is
       return ergebnis;
    end;
    
+   function summe_c(x, n: Integer) return Integer is
+      ergebnis: Integer;
+   begin
+      ergebnis := 0;
+      for i in 0..n+x loop
+         ergebnis := ergebnis + (i * x);
+      end loop;
+      return ergebnis;
+   end;
+   
+   function summe_d(x, n: Integer) return Integer is
+      ergebnis: Integer; -- End-/Zwischenergebnis der Summe
+      produkt:  Integer; -- End-/Zwischenergebnisse der Produkte
+   begin
+      ergebnis := 0;
+      
+      for j in 1..n loop
+      
+         produkt := 1; -- Zwischenergebnis zuruecksetzen
+         
+         for i in 1..j loop -- Produkt Berechnen
+            produkt := i * j;
+         end loop;
+         
+         ergebnis := ergebnis + produkt; -- aufsummieren
+         
+      end loop;
+      return ergebnis;
+   end;
+   
+   function summe_e(x, n: Integer) return Integer is
+      ergebnis: Integer;
+   begin
+      ergebnis := 0;
+      for i in n..x loop
+         ergebnis := produkt_a(i, n + x); -- produkt_a Entspricht n^x mit natuerlichem x
+      end loop;
+      return ergebnis;
+   end;
+   
    x, n, ergebnis_int: Integer;
-   ergebnis_float: Float;
+   ergebnis_float:     Float;
 begin
    Put_Line("Geben Sie x an:");
    Get(x);
@@ -46,6 +86,21 @@ begin
    ergebnis_float := produkt_b(x, n);
    Put("Ergebnis b): ");
    Put(ergebnis_float);
+   New_Line;
+   
+   ergebnis_int := summe_c(x, n);
+   Put("Ergebnis c): ");
+   Put(ergebnis_int);
+   New_Line;
+   
+   ergebnis_int := summe_d(x, n);
+   Put("Ergebnis d): ");
+   Put(ergebnis_int);
+   New_Line;
+   
+   ergebnis_int := summe_e(x, n);
+   Put("Ergebnis e): ");
+   Put(ergebnis_int);
    New_Line;
    
 end for_schleifen;
