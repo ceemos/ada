@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 -- weihnachten.adb
--- PSE 
+-- PSE Aufgabenblatt 2
 -- Version:	1
 -- Datum:	30. 10. 2011
 -- Autoren: 	Marcel Schneider
@@ -23,6 +23,7 @@ procedure weihnachten is
            or (j mod 400) = 0;
    end ist_schaltjahr;
    
+   -- erhoehe das Datum um einen Tag, beachte dabei alle Monats/Jahreswechsel
    procedure addiere_einen_Tag(t, m, j: in out Natural) is
    begin
       
@@ -82,6 +83,7 @@ begin
    if ist_gueltiges_datum(tag, monat, jahr) then
    
       anzahl_Tage := 0;
+      -- addiere Tage bis Weihnachten erreicht ist.
       while not ist_weihnachten(tag, monat) loop
          addiere_einen_Tag(tag, monat, jahr);
          anzahl_Tage := anzahl_Tage + 1;
@@ -90,11 +92,11 @@ begin
       Put("Es verbleiben noch ");
       Put(anzahl_Tage);
       Put(" Tage bis Weihnachten."); 
-   else 
+   else
+      -- Datum nicht gueltig.
       Put_Line("Wahrscheinlich wird Weihnachten nie erreicht.");
    end if;
-   
-   
+
 end weihnachten;
 
 -- kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; line-numbers on; space-indent on; mixed-indent off
