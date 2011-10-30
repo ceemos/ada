@@ -5,6 +5,15 @@
 -- Datum:	25. 10. 2011
 -- Autoren: 	Marcel Schneider
 -----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+-- Erlaeuterungen:
+-- - das Programm berechnet nur Werte bis 12! richtig. 
+-- - die Werte von 13! bis 16! werden ausgegeben, sind aber falsch.
+-- - ab 17! stuertzt das Programm ab: 
+--   raised CONSTRAINT_ERROR : fakultaet.adb:26 range check failed
+-----------------------------------------------------------------------
+
 with Ada.Text_IO, Ada.Integer_Text_IO;
 use Ada.Text_IO, Ada.Integer_Text_IO;
 procedure Fakultaet is
