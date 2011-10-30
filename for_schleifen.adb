@@ -65,13 +65,14 @@ procedure for_schleifen is
    begin
       ergebnis := 0;
       for i in n..x loop
-         ergebnis := produkt_a(i, n + x); -- produkt_a Entspricht n^x mit natuerlichem x
+         -- produkt_a Entspricht n^x mit natuerlichem x
+         ergebnis := produkt_a(i, n + x); 
       end loop;
       return ergebnis;
    end;
    
    x, n, ergebnis_int: Integer;
-   ergebnis_float:     Float;
+   ergebnis_float:     Float; -- speziell fuer b)
 begin
    Put_Line("Geben Sie x an:");
    Get(x);
