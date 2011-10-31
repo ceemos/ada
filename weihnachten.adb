@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 -- weihnachten.adb
 -- PSE Aufgabenblatt 2
--- Version:	1
+-- Version:	2
 -- Datum:	30. 10. 2011
 -- Autoren: 	Marcel Schneider
 -----------------------------------------------------------------------
@@ -23,38 +23,6 @@ procedure weihnachten is
            or (j mod 400) = 0;
    end ist_schaltjahr;
    
-   -- erhoehe das Datum um einen Tag, beachte dabei alle Monats/Jahreswechsel
-   procedure addiere_einen_Tag(t, m, j: in out Natural) is
-   begin
-      
-      -- Sonderfall Februar
-      if m = 2 then
-         if    (t = 28 and not ist_schaltjahr(j))
-            or (t = 29 and     ist_schaltjahr(j)) then
-            t := 0;
-            m := 3;
-         end if;
-      end if;     
-      -- Monatswechsel bei 30 Tegen
-      if t = 30 and (m = 4 or m = 6 or m = 9 or m = 11) then
-         t := 0;
-         m:= m + 1;
-      end if;
-      -- Monatswechsel bei 31 Tagen
-      if t = 31 and (m = 1 or m = 3 or m = 5 
-                  or m = 7 or m = 8 or m = 10 or m = 12) then
-         t := 0;
-         m:= m + 1;
-      end if;
-      -- Jahreswechsel
-      if m = 13 then
-         j := j + 1;
-         m := 1;
-      end if;
-
-      t := t + 1;
-   end addiere_einen_Tag;
-   
    -- prueft, ob die uebergebenen Daten plausibel sind
    function ist_gueltiges_datum(t, m, j: Natural) return boolean is
    begin
@@ -67,7 +35,22 @@ procedure weihnachten is
           or ( m = 2 and not ist_schaltjahr(j) and t <= 28 )
          );
    end ist_gueltiges_datum;
-         
+   
+   -- erhoehe das Datum um einen Tag, beachte dabei alle Monats/Jahreswechsel
+   procedure addiere_einen_Tag(t, m, j: in out Natural) is
+   begin
+      -- ist_gueltiges_datum(t, m, j) muss wahr sein
+      t := t + 1; -- einen Tag weiter
+      if not ist_gueltiges_datum(t, m, j) then -- Tagesbereich verlassen
+         t := 1;       -- Monat weiterspringen
+         m := m + 1;
+         if not ist_gueltiges_datum(t, m, j) then -- Monatsbereich verlassen
+            m := 1;    -- Jahr weiterspringen
+            j := j + 1;
+         end if;
+      end if;
+      -- ist_gueltiges_datum(t, m, j) sollte wieder wahr sein 
+   end addiere_einen_Tag;
    
    tag, monat, jahr: Natural;
    anzahl_Tage: Natural;
