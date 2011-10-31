@@ -3,7 +3,7 @@
 -- PSE 
 -- Version:	1
 -- Datum:	31. 10. 2011
--- Autoren: 	Marcel Schneider
+-- Autoren: 	Marcel Schneider  u. A.
 -----------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
@@ -11,7 +11,8 @@ with Ada.Text_IO;            use Ada.Text_IO;
 with Ada.Integer_Text_IO;            use Ada.Integer_Text_IO;
 with Interfaces;             use Interfaces;
 procedure fakultaet_bigint is
-
+-- Long_Number Code stolen at: http://rosettacode.org/wiki/Long_multiplication#Ada
+-- begin
 type Long_Number is array (Natural range <>) of Unsigned_32;
  
    function "*" (Left, Right : Long_Number) return Long_Number is
@@ -75,24 +76,28 @@ type Long_Number is array (Natural range <>) of Unsigned_32;
       end loop;
    end Put;
    
+-- end stolen_code
+
+   -- aufgrund der Bauweise der Long_Number ist nur die Rekursive Version 
+   -- möglich, die sonst nötige Operation x := x * n klappt nämlich nicht mit
+   -- statischen Arrays. (vvl. gings mit Zeigern oder so)
    function fakultaet(n: Natural) return Long_Number is
    begin
       if n = 0 then
-         return (0 => 1);
+         return (0 => 1); -- 1 als Long_Number (Array mit 1 im 0. Element)
       else 
-         return fakultaet(n - 1) * (0 => Unsigned_32(n));
+         return fakultaet(n - 1) * (0 => Unsigned_32(n)); -- die Multiplikation 
+                  -- Operator aus dem stolen_code
       end if;
    end;
- 
-   X : Long_Number := (0 => 0, 1 => 0, 2 => 1) * (0 => 0, 1 => 0, 2 => 1);
-   N: Natural;
 
+   
+   N: Natural;
 begin
    
---    Put_Line("Geben Sie die Zahl an:");
---    Get(N);
-   N := 10000;
-   
+   Put_Line("Geben Sie die Zahl an:");
+   Get(N);
+   -- N := 10000;
    
    -- Augabe einer Zeile
    Put(N, 4); -- 4 Stellen n
