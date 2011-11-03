@@ -1,16 +1,16 @@
 -----------------------------------------------------------------------
--- schleifen_umformung.adb
--- PSE Aufgabenblatt 2
--- Version:	1
--- Datum:	30. 10. 2011
--- Autoren: 	Marcel Schneider
+--  schleifen_umformung.adb
+--  PSE Aufgabenblatt 2
+--  Version:    1
+--  Datum:      0. 10. 2011
+--  Autoren:    Marcel Schneider
 -----------------------------------------------------------------------
 
 with Ada.Text_IO, Ada.Integer_Text_IO;
 use Ada.Text_IO, Ada.Integer_Text_IO;
 procedure schleifen_umformung is
-   X, Limit, Result: Integer; -- Variablen aus den Codeschnippseln
-   I, J:             Integer; -- Laufvariablen
+   X, Limit, Result : Integer; -- Variablen aus den Codeschnippseln
+   I, J :             Integer; -- Laufvariablen
 begin
    
    X      := 7; -- Beispielwerte
@@ -28,7 +28,7 @@ begin
       I := I + 1;
    end loop;
    
-   Put(Result); -- Damit man das Ergebnis auch sieht
+   Put (Result); -- Damit man das Ergebnis auch sieht
    New_Line;
    
    -- Aufgabe b)
@@ -70,4 +70,5 @@ begin
  
 end schleifen_umformung;
 
--- kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; line-numbers on; space-indent on; mixed-indent off
+--  kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; 
+--  kate: line-numbers on; space-indent on; mixed-indent off

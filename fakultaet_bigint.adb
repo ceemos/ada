@@ -8,8 +8,9 @@
 
 with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
 with Ada.Text_IO;            use Ada.Text_IO;
-with Ada.Integer_Text_IO;            use Ada.Integer_Text_IO;
+with Ada.Integer_Text_IO;    use Ada.Integer_Text_IO;
 with Interfaces;             use Interfaces;
+
 procedure fakultaet_bigint is
 --  Long_Number Code stolen at : 
 --  http://rosettacode.org/wiki/Long_multiplication#Ada

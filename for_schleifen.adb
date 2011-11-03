@@ -24,7 +24,7 @@ procedure for_schleifen is
       ergebnis : Float;
    begin
       ergebnis := 1.0;
-      for i in x .. 2*x loop
+      for i in x .. 2 * x loop
          ergebnis := ergebnis * (1.0 / Float (n));
       end loop;
       return ergebnis;
