@@ -15,22 +15,19 @@ procedure klammern is
                               klammer_offen : in Boolean) is
    begin
       while index <= Length (ausdruck) loop
-         case Element (ausdruck, index) is
+         index := index + 1; --  Index erhoehen, wird spaeter schwer
+         case Element (ausdruck, index - 1) is
             when ')' => --  Diese Klammer ist unsere schliessende
-               index := index + 1; --  Zeichen Verarbeitet
                --  ok, wenn vorher eine Klammer aufging
                ergebnis := klammer_offen; 
                return; 
-            when '(' =>
-               index := index + 1; --  Zeichen Verarbeitet
-               --  Rekursiv weiterpruefen
+            when '(' => --  Rekursiv weiterpruefen
+               --  index wird aufs Ende der inneren Klammer geschoben
                pruefe_klammern_impl (ausdruck, index, ergebnis, True);
                if not ergebnis then
                   return; --  Fehler in der inneren Klammer
                end if;
-               --  index wurde aufs Ende der inneren Klammer geschoben
-            when others =>
-               index := index + 1; --  Zeichen Verarbeitet
+            when others => null; --  Es gibt nix zu tun
          end case;
       end loop;
       --  Ende erreicht, Fehler wenn eine Klammer offen ist
