@@ -1,0 +1,19 @@
+A4 
+a)
+Die Prozedur Put gibt die Zahlen in einem Array beliebiger Größe nacheinander, mit " # " getrennt, auf der Konsole aus.
+
+b)
+Die Prozedur Read liest für jeden Eintrag eines Arrays eine Zahl von Benutzer ein und speichert sie in die entsprechnde Stelle des Arrays.
+
+c)
+Erst in Zeile 65 wird die Größe des Arrays eingelesen und ist damit bekannt, deshalb kann das Array erst danach deklariert werden.
+
+d)
+Die Werte in den Stellen I und I-1 des Arrays A werden vertauscht. Dazu wird an Stelle I die Summe gespeichert (Z. 42), dann daraus in Stelle I-1 der Wert aus I rekonstruiert (Z. 43) und schließlich der Wert aus I-1 an Stelle I rekonstruiert. So können die Werte vertauscht werden, ohne einen temporären, zusätzlichen Speicherplatz zu benötigen.
+
+e)
+Die Prozedur Shake_it implementiert den als „Shaker Sort“ bekannten Sortieralgorithmus:
+Das Array wird abwechselnd vom unteren zum oberen und wieder zum unteren Ende durchlaufen (for-Schleifen Z. 38 + 48), wobei benachbarte Werte vertauscht werden, Wenn der weiter oben im Array stehende Wert (höherer Index) kleiner ist als der weiter unten stehende. Dies wird wiederholt (while-Schleife Z. 36) bis in einem Durchlauf keine Vertauschungen mehr durchgeführt wurden (Merker-Variable „Weiter“). Das Array ist dann aufsteigend sortiert.
+
+f)
+-55, -32, -1, 0, 0, 1, 55, 93
