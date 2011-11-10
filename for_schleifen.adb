@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  for_schleifen.adb
---  PSE Aufgabenblatt 2
+--  Datei:      for_schleifen.adb
+--  Projekt:    PSE Aufgabenblatt 2
 --  Version:    1
 --  Datum:      30. 10. 2011
 --  Autoren:    Marcel Schneider
@@ -107,4 +107,4 @@ begin
 end for_schleifen;
 
 --  kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; 
---  Kate: line-numbers on; space-indent on; mixed-indent off
+--  kate: line-numbers on; space-indent on; mixed-indent off

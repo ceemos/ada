@@ -5,7 +5,7 @@
 -- Datum:	25. 10. 2011
 -- Autoren: 	Marcel Schneider
 -----------------------------------------------------------------------
-
+-- Compile: gnatmake -gnatp fakultaet.adb
 -----------------------------------------------------------------------
 -- Erlaeuterungen:
 -- - das Programm berechnet nur Werte bis 12! richtig. 

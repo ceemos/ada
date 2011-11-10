@@ -19,15 +19,11 @@ procedure coinproblem is
    optimal  : Natural;
 begin
    Put_Line ("Wert?");
-   Get(wert);
+   Get (wert);
    
    elfer := wert / 11;
-   rest := wert mod 11;
-   siebner := rest / 7;
-   rest := rest mod 7;
-   einer := rest;
    
-   optimal := einer + siebner + elfer;
+   optimal := Integer'Last;
    
    for e in 0 .. elfer loop
       rest := wert - e * 11;
@@ -39,7 +35,11 @@ begin
       end if;
    end loop;
    
-   Put_Line (Integer'Image(optimal));
+   Put_Line (Integer'Image (optimal));
+   
+   exception
+      when Constraint_Error =>
+         Put ("Zahl ausserhalb des zulaessigen Bereiches");
 end coinproblem;
 
 --  kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; 
