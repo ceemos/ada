@@ -1,10 +1,18 @@
------------------------------------------------------------------------
---  omega_rekursion.adb
---  PSE Blatt 3
---  Version:    1
---  Datum:      05. 11. 2011
---  Autoren:    Marcel Schneider
------------------------------------------------------------------------
+--  FILE: omega_rekursion.adb
+--
+--  PROJECT: Programmieruebungen , Uebungsblatt 3
+--  VERSION: 2
+--  DATE: 10. 11, 2011
+--  AUTHOR: Marcel Schneider
+--
+-------------------------------------------------------------------------------
+--
+--  <PROCEDURE> omega_rekursion
+--
+--  Diese Prozedur berechnet mit Hilfe einer rekursiven Funktion eine 
+--  vorgegebene math. Funktion.
+--
+
 
 with Ada.Text_IO;
 use Ada.Text_IO;

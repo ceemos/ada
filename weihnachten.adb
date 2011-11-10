@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  weihnachten.adb
---  PSE Aufgabenblatt 2
+--  Datei:      weihnachten.adb
+--  Projekt:    PSE Aufgabenblatt 2
 --  Version:    2
 --  Datum:      30. 10. 2011
 --  Autoren:    Marcel Schneider

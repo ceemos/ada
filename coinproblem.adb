@@ -22,6 +22,7 @@ begin
    Get (wert);
    
    elfer := wert / 11;
+   
    optimal := Natural'Last;
    
    for e in 0 .. elfer loop
@@ -35,6 +36,10 @@ begin
    end loop;
    
    Put_Line (Integer'Image (optimal));
+   
+   exception
+      when Constraint_Error =>
+         Put ("Zahl ausserhalb des zulaessigen Bereiches");
 end coinproblem;
 
 --  kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; 
