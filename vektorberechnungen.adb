@@ -1,4 +1,4 @@
---  FILE: vector.adb
+--  FILE: vektorberechnugen.adb
 --
 --  PROJECT: Programmieruebungen , Uebungsblatt 4
 --  VERSION: 1
@@ -7,13 +7,13 @@
 --
 -------------------------------------------------------------------------------
 --
---  <PROCEDURE> vektor
+--  <PROCEDURE> vektorberechnugen
 --  fuehrt Vektoroperationen mit ueberladenen Operatoren aus.
 --
 
 
-with Ada.Text_IO, Ada.Float_Text_IO;
-procedure vektor is
+with Ada.Text_IO, Ada.Float_Text_IO, Ada.Integer_Text_IO;
+procedure vektorberechnungen is
 
    type Vektor is array (Natural range <>) of Float; 
    
@@ -106,25 +106,74 @@ procedure vektor is
       return Ergebnis;
    end "**";
    
+   auswahl : Character;
+   dimension : Positive;
    
-   v : Vektor (1 .. 3) := (0.5789, 100.0, 2.0);
-   a : Vektor (1 .. 3);
-   b : Vektor (1 .. 3); 
-   e : Vektor (1 .. 3);
 begin
-   Get (a);
-   Get (b);
-   Put (a + b);
-   Put (3.0 * a);
-   Ada.Float_Text_IO.Put (a * b);
-   Ada.Text_IO.New_Line;
-   e := a ** b;
-   Put (e);
-   Ada.Float_Text_IO.Put (a * e);
-   Ada.Text_IO.New_Line;
-   Ada.Float_Text_IO.Put (b * e);
-   Ada.Text_IO.New_Line;
-end vektor;
+   loop
+      Ada.Text_IO.Put_Line ("Was soll berechnet werden?");
+      Ada.Text_IO.Put_Line ("a) Addition zweier Vektoren,");
+      Ada.Text_IO.Put_Line ("b) Subtraktion zweier Vektoren,");
+      Ada.Text_IO.Put_Line ("c) Multiplikation mit einem Skalar,");
+      Ada.Text_IO.Put_Line ("d) Skalarprodukt,");
+      Ada.Text_IO.Put_Line ("e) Kreuzprodukt,");
+      Ada.Text_IO.Put_Line ("x) Beenden");
+      
+      Ada.Text_IO.Get (auswahl);
+      
+      case auswahl is
+         when 'a' | 'b' | 'c' | 'd' =>
+            Ada.Text_IO.Put_Line ("Anzahl Dimensionen?");
+            Ada.Integer_Text_IO.Get (dimension);
+            declare
+               vec_a, vec_b : Vektor (1 .. dimension);
+               skalar : Float;
+            begin
+               Ada.Text_IO.Put_Line ("Daten fuer 1. Vektor:");
+               Get (vec_a);
+               
+               if auswahl /= 'c' then 
+                  Ada.Text_IO.Put_Line ("Daten fuer 2. Vektor:");
+                  Get (vec_b);
+               end if;
+               case auswahl is 
+                  when 'a' =>
+                     Put (vec_a + vec_b);
+                  when 'b' =>
+                     Put (vec_a + (vec_b * (-1.0)));
+                  when 'c' =>
+                     Ada.Text_IO.Put_Line ("Geben Sie den Skalar an:");
+                     Ada.Float_Text_IO.Get (skalar);
+                     Put (vec_a * skalar);
+                  when 'd' =>
+                     Ada.Float_Text_IO.Put (vec_a * vec_b, 1, 4, 0);
+                     Ada.Text_IO.New_Line;
+                  when others =>
+                     null; --  sollte niemals auftreten, wg. aeusserem case 
+               end case;
+            end;
+         when 'e' =>
+            declare
+               vec_a, vec_b : Vektor (1 .. 3);
+            begin
+               Ada.Text_IO.Put_Line ("Daten fuer 1. Vektor:");
+               Get (vec_a);
+
+               Ada.Text_IO.Put_Line ("Daten fuer 2. Vektor:");
+               Get (vec_b);
+               
+               Put (vec_a ** vec_b);
+            end;
+         when 'x' =>
+            exit;
+         when others =>
+            Ada.Text_IO.Put_Line ("Geben Sie bitte etwas vernuenftiges ein.");
+      end case;
+   end loop;
+      
+
+
+end vektorberechnungen;
 
 --  kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; 
 --  kate: line-numbers on; space-indent on; mixed-indent off;
