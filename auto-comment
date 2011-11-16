@@ -1,0 +1,61 @@
+#!/usr/bin/php
+<?php
+# Run: ./auto-comment vektor.adb
+if (!isset($argv[1])) {
+    
+}
+$ada = file($argv[1], FILE_IGNORE_NEW_LINES);
+$out = array();
+
+$skip_main = true;
+
+foreach ($ada as $z => $line) {
+    $erg = array();
+    preg_match("/^( *)(procedure|function) ([^\(]*)(\(.*\))? (return (.*))?is/", $line, $erg);
+    if (count($erg) > 0) {
+        
+        if ($skip_main) {
+            $skip_main = false;
+            continue;
+        }
+        
+        if (isset($ada[$z-2]) && substr(trim($ada[$z-2]), 0, 4) == "--  ") {
+            continue;
+        }
+        
+        var_dump($erg);
+        $ind = $erg[1];
+        $typ = strtoupper($erg[2]);
+        $name = $erg[3];
+        $out[] = "$ind--  $typ $name";
+        $out[] = "$ind--";
+        $out[] = "$ind-- <Text>";
+        $out[] = "$ind--";
+        
+        // Parameter
+        if(isset($erg[4])) {
+            $out[] = "$ind--  PARAMETERS: ";
+            $para = array();
+            //preg_match("/\((([^,:]*)(,|:[^;]*;?))(([^,:]*)(,|:[^;]*;?))?(([^,:]*)(,|:[^;]*;?))?\)/", $erg[3], $para);
+            preg_match_all("/\(?([^,:;]*)(,|:|;|\))/", $erg[4], $para);
+            var_dump ($para);
+            $par = $para[1];
+            $trenner = $para[2];
+            foreach ($par as $i => $bez) {
+                if (!isset($trenner[$i - 1]) || $trenner[$i - 1] != ":") {
+                    $var = trim($bez);
+                    $out[] = "$ind--   + $var: ";
+                }
+            }
+            $out[] = "$ind--  ";
+        }
+        
+    }
+    $out[] = $line;
+}
+
+$text = implode($out, "\n");
+$outfile = $argv[1] . ".new";
+file_put_contents($outfile, $text);
+
+# kate: space-indent on; indent-width 4; mixedindent off; indent-mode cstyle; dynamic-word-wrap on; line-numbers on;

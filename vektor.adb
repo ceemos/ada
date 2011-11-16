@@ -1,6 +1,6 @@
 --  FILE: vector.adb
 --
---  PROJECT: Programmieruebungen , Uebungsblatt 1
+--  PROJECT: Programmieruebungen , Uebungsblatt 4
 --  VERSION: 1
 --  DATE: 14. 11. 2011
 --  AUTHOR: Marcel Schneider

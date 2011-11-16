@@ -8,7 +8,8 @@
 -------------------------------------------------------------------------------
 --
 --  <PROCEDURE> vektorberechnugen
---  fuehrt Vektoroperationen mit ueberladenen Operatoren aus.
+--  Interaktives Programm das Vektoroperationen mit ueberladenen Operatoren 
+--  ausfuehrt.
 --
 
 
