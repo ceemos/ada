@@ -16,10 +16,12 @@ foreach ($ada as $z => $line) {
         
         if ($skip_main) {
             $skip_main = false;
+            $out[] = $line;
             continue;
         }
         
         if (isset($ada[$z-2]) && substr(trim($ada[$z-2]), 0, 4) == "--  ") {
+            $out[] = $line;
             continue;
         }
         
@@ -29,7 +31,7 @@ foreach ($ada as $z => $line) {
         $name = $erg[3];
         $out[] = "$ind--  $typ $name";
         $out[] = "$ind--";
-        $out[] = "$ind-- <Text>";
+        $out[] = "$ind--  <Text>";
         $out[] = "$ind--";
         
         // Parameter
@@ -50,12 +52,18 @@ foreach ($ada as $z => $line) {
             $out[] = "$ind--  ";
         }
         
+        // return
+        if(isset($erg[6])) {
+            $out[] = "$ind--  RETURNS: ";
+            $out[] = "$ind--  ";
+        }
     }
     $out[] = $line;
 }
 
 $text = implode($out, "\n");
-$outfile = $argv[1] . ".new";
+$outfile = $argv[1];
+`cp $outfile $outfile~`;
 file_put_contents($outfile, $text);
 
 # kate: space-indent on; indent-width 4; mixedindent off; indent-mode cstyle; dynamic-word-wrap on; line-numbers on;

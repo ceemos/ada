@@ -18,6 +18,13 @@ procedure vektorberechnungen is
 
    type Vektor is array (Natural range <>) of Float; 
    
+   --  PROCEDURE Put 
+   --
+   --  Gibt einen Vektor auf der Konsole aus.
+   --
+   --  PARAMETERS: 
+   --   + v: Der auszugebende Vektor
+   --  
    procedure Put (v : Vektor) is
    begin
       Ada.Text_IO.Put ("(");
@@ -33,6 +40,14 @@ procedure vektorberechnungen is
       Ada.Text_IO.Put_Line (")");
    end Put;
    
+   --  PROCEDURE Get 
+   --
+   --  Liest die Werte eines Vektors vom Benutzer ein.
+   --  Die Anzahl Werte wird aus dem Vektor bestimmt.
+   --
+   --  PARAMETERS: 
+   --   + v: Der einzulesende Vektor.
+   --  
    procedure Get (v : out Vektor) is
       --  Aktuell eingelesene Zahl
       Zahl : Float;
@@ -45,6 +60,17 @@ procedure vektorberechnungen is
       end loop;
    end Get;
    
+   --  FUNCTION "+" 
+   --
+   --  Addiert zwei Vektoren.
+   --
+   --  PARAMETERS: 
+   --   + a: der 1. Vektor.
+   --   + b: der 2. Vektor, muss gleich gross wie der 1. sein.
+   --  
+   --  RETURNS: die Vektorsumme, (gleich gross wie a und b)
+   --  RAISE: Constraint_Error, falls die groessen nicht zusammenpassen
+   --  
    function "+" (a, b : Vektor) return Vektor is 
       Ergebnis : Vektor (a'Range);
    begin
@@ -60,6 +86,16 @@ procedure vektorberechnungen is
       return Ergebnis;
    end "+";
    
+   --  FUNCTION "*" 
+   --
+   --  multipliziert einen Vektor mit einem Skalar
+   --
+   --  PARAMETERS: 
+   --   + a: der Vektor
+   --   + skalar: der Skalarfaktor
+   --  
+   --  RETURNS: der Vektor, mit dem Skalar multipliziert.
+   --  
    function "*" (a : Vektor; skalar : Float) return Vektor is 
       Ergebnis : Vektor (a'Range);
    begin
@@ -71,11 +107,32 @@ procedure vektorberechnungen is
       return Ergebnis;
    end "*";
    
+   --  FUNCTION "*" 
+   --
+   --  multipliziert einen Vektor mit einem Skalar
+   --
+   --  PARAMETERS: 
+   --   + a: der Vektor
+   --   + skalar: der Skalarfaktor
+   --  
+   --  RETURNS: der Vektor, mit dem Skalar multipliziert.
+   --
    function "*" (skalar : Float; a : Vektor) return Vektor is 
    begin
       return a * skalar;
    end "*";
    
+   --  FUNCTION "*" 
+   --
+   --  berechnet das Skalarprodukt zweier Vektoren.
+   --
+   --  PARAMETERS: 
+   --   + a: der 1. Vektor
+   --   + b: der 2. Vektor. Muss gleich gross wie der 1. sein.
+   --  
+   --  RETURNS: das Skalarprodukt
+   --  RAISE: Constraint_Error, falls die groessen nicht zusammenpassen
+   --  
    function "*" (a, b : Vektor) return Float is 
       Ergebnis : Float := 0.0;
    begin
@@ -91,6 +148,17 @@ procedure vektorberechnungen is
       return Ergebnis;
    end "*";
    
+   --  FUNCTION "**" 
+   --
+   --  Berchnet der Kreuzprodukt zweier Vektoren der Dimension 3
+   --
+   --  PARAMETERS: 
+   --   + a: der linke Vekotr
+   --   + b: der rechte Vektor
+   --  
+   --  RETURNS: das Vektorprodukt a x b
+   --  RAISE: Constraint_Error, falls die groessen ungleich 3 sind
+   --  
    function "**" (a, b : Vektor) return Vektor is 
       Ergebnis : Vektor (a'Range);
    begin
