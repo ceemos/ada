@@ -16,7 +16,7 @@ with Ada.Text_IO;
 use Ada.Text_IO;
 procedure Acht_Damen is
    type Feld is (Frei, Dame, Bedroht);
-   subtype Index is Integer range 1 .. 8;
+   subtype Index is Integer range 1 .. 9;
    type Schachbrett is array (Index, Index) of Feld;
    
    procedure Put (stellung : Schachbrett) is 
@@ -39,6 +39,21 @@ procedure Acht_Damen is
       end loop;
       Put_Line ("+---+---+---+---+---+---+---+---+");
    end Put;
+   
+   counter : Integer := 0;
+   procedure count is
+   begin
+      counter := counter + 1;
+   end count;
+   
+   function Fakultaet (zahl : Integer) return Integer is
+   begin
+      if zahl = 1 then
+         return 1;
+      else
+         return Fakultaet (zahl - 1) * zahl;
+      end if;
+   end Fakultaet;
    
    function ist_Unschlagbar (stellung : Schachbrett; x, y : Index) 
       return Boolean is
@@ -112,7 +127,8 @@ procedure Acht_Damen is
                setze_Dame (x, y, brett);
                level_neu := level + 1;
                if level_neu = Index'Last then
-                  Put (brett);
+                  --  Put (brett);
+                  count;
                   ziel_erreichbar := True;
                else 
                   ziel_erreichbar := ziel_erreichbar 
@@ -138,6 +154,8 @@ begin
    moeglich := teste_rekursiv (brett, 0);
    if moeglich then
       Put_Line ("es ist mgl. 8 Damen zu setzen");
+      Put_Line ("Anzahl Komb.: " 
+               & Integer'Image (counter / Fakultaet (Index'Last)));
    end if;
 end Acht_Damen;
 
