@@ -14,6 +14,7 @@
 
 
 with Ada.Text_IO, Ada.Float_Text_IO, Ada.Integer_Text_IO;
+with Ada.IO_Exceptions;
 procedure vektorberechnungen is
 
    type Vektor is array (Natural range <>) of Float; 
@@ -220,6 +221,9 @@ begin
                   when others =>
                      null; --  sollte niemals auftreten, wg. aeusserem case 
                end case;
+            exception
+               when ADA.IO_EXCEPTIONS.DATA_ERROR =>
+                  Ada.Text_IO.Put_Line ("Bitte geben Zahlen ein!");
             end;
          when 'e' =>
             declare
