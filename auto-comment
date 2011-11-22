@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-# Run: ./auto-comment vektor.adb
+# Run: ./auto-comment acht_damen.adb
 if (!isset($argv[1])) {
     
 }
@@ -9,19 +9,21 @@ $out = array();
 
 $skip_main = true;
 
-foreach ($ada as $z => $line) {
+foreach ($ada as $z => $l) {
+    // Alle folgenden Zeilen Verschmelzen - wg. LF in Deklarationen
+    $line = implode(array_slice($ada, $z), "\n");
     $erg = array();
-    preg_match("/^( *)(procedure|function) ([^\(]*)(\(.*\))? (return (.*))?is/", $line, $erg);
+    preg_match("/^( *)(procedure|function) ?([^\(\n]*)(\([^\(\)]*\))?[ \n]+(return (.*))?is/s", $line, $erg);
     if (count($erg) > 0) {
         
         if ($skip_main) {
             $skip_main = false;
-            $out[] = $line;
+            $out[] = $l;
             continue;
         }
         
         if (isset($ada[$z-2]) && substr(trim($ada[$z-2]), 0, 4) == "--  ") {
-            $out[] = $line;
+            $out[] = $l;
             continue;
         }
         
@@ -58,7 +60,7 @@ foreach ($ada as $z => $line) {
             $out[] = "$ind--  ";
         }
     }
-    $out[] = $line;
+    $out[] = $l;
 }
 
 $text = implode($out, "\n");

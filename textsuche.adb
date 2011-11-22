@@ -16,8 +16,11 @@ with Ada.Text_IO, Ada.Strings.Unbounded, Ada.Strings.Unbounded.Text_IO;
 use Ada.Text_IO, Ada.Strings.Unbounded, Ada.Strings.Unbounded.Text_IO;
 procedure Textsuche is
    function contains (haystack, needle : Unbounded_String) return Boolean is
-   matchedlen : Integer := 0;
+      matchedlen : Integer := 0;
    begin
+      if Length (needle) = 0 then
+         return True;
+      end if;
       for i in 1 .. Length (haystack) - Length (needle) + 1 loop
          if Element (haystack, i) = Element (needle, 1) then
             for j in 1 .. Length (needle) loop
