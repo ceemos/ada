@@ -29,16 +29,16 @@ foreach ($ada as $z => $l) {
         
         var_dump($erg);
         $ind = $erg[1];
-        $typ = strtoupper($erg[2]);
+        $typ = ucfirst($erg[2]);
         $name = $erg[3];
-        $out[] = "$ind--  $typ $name";
+        $out[] = "$ind--  @$typ: $name";
         $out[] = "$ind--";
         $out[] = "$ind--  <Text>";
         $out[] = "$ind--";
         
         // Parameter
         if(isset($erg[4])) {
-            $out[] = "$ind--  PARAMETERS: ";
+            $out[] = "$ind--  @Parameter: ";
             $para = array();
             //preg_match("/\((([^,:]*)(,|:[^;]*;?))(([^,:]*)(,|:[^;]*;?))?(([^,:]*)(,|:[^;]*;?))?\)/", $erg[3], $para);
             preg_match_all("/\(?([^,:;]*)(,|:|;|\))/", $erg[4], $para);
@@ -56,7 +56,7 @@ foreach ($ada as $z => $l) {
         
         // return
         if(isset($erg[6])) {
-            $out[] = "$ind--  RETURNS: ";
+            $out[] = "$ind--  @Return: ";
             $out[] = "$ind--  ";
         }
     }
