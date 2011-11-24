@@ -41,9 +41,16 @@ begin
       --   + stellung: Das Auszugebende Schachbrett
       --  
       procedure Put (stellung : Schachbrett) is 
+         procedure Put_Border is
+         begin
+            for i in Index loop
+               Put ("+---");
+            end loop;
+            Put_Line ("+");
+         end Put_Border;
       begin
          for y in Index loop
-            Put_Line ("+---+---+---+---+---+---+---+---+");
+            Put_Border;
             for x in Index loop
                Put ("|");
                case stellung (x, y) is
@@ -58,7 +65,7 @@ begin
             Put ("|");
             New_Line;
          end loop;
-         Put_Line ("+---+---+---+---+---+---+---+---+");
+         Put_Border;
       end Put;
       
       counter : Integer := 0;
@@ -191,9 +198,6 @@ begin
             markiere_Bedroht (x + i, y, stellung);
             markiere_Bedroht (x - i, y, stellung);
          end loop;
-   --       Put_Line ("Setzte Dame auf " & Integer'Image (x) & "," 
-   --             & Integer'Image (y));
-   --       Put (stellung);
       end setze_Dame;
       
       --  FUNCTION konstruiere_Stellungen 
@@ -212,23 +216,27 @@ begin
          brett : Schachbrett := stellung;
          level_neu : Integer;
          ziel_erreichbar : Boolean := False;
+         y : Integer := level + 1; --  die level+1. Dame muss gesetzt werden.
       begin
          for x in Index loop
-            for y in Index loop
-               if brett (x, y) = Frei then
-                  setze_Dame (x, y, brett);
-                  level_neu := level + 1;
-                  if level_neu = Index'Last then
-                     --  Put (brett);
-                     count;
-                     ziel_erreichbar := True;
-                  else 
-                     ziel_erreichbar := ziel_erreichbar 
-                        or konstruiere_Stellungen (brett, level_neu);
-                  end if;
+            --  Voraussetzung: n-te dame in n-ter Zeile. Klappt nur mit Damen/
+            --  Tuermen (hier gegeben) aber reduziert den aufwand um n!
+            --  weil keine Lsg. mehrfach gefunden werden.
+            --  for y in Index loop
+            if brett (x, y) = Frei then
+               setze_Dame (x, y, brett);
+               level_neu := level + 1;
+               if level_neu = Index'Last then
+                  Put (brett);
+                  count;
+                  ziel_erreichbar := True;
+               else 
+                  ziel_erreichbar := ziel_erreichbar 
+                     or konstruiere_Stellungen (brett, level_neu);
                end if;
-               brett := stellung;
-            end loop;
+            end if;
+            brett := stellung;
+            --  end loop;
          end loop;
          return ziel_erreichbar;
       end konstruiere_Stellungen;
@@ -236,21 +244,13 @@ begin
       brett : Schachbrett := (others => (others => Frei));
       moeglich : Boolean;
    begin
-      --  setze_Dame (3, 5, brett);
-      --  Put (brett);
-      
-   --    if ist_Unschlagbar (brett, 1, 1) then
-   --       Put_Line ("1, 1 ist nicht schlagbar");
-   --    end if;
 
+      --  level = 0 da noch keine Damen auf dem Brett sind.
       moeglich := konstruiere_Stellungen (brett, 0);
       if moeglich then
          Put_Line ("es ist mgl." & Integer'Image (Index'Last) 
                   & " Damen zu setzen");
-         --  Der Algorithmus beachtet die Reihenfolge ind er die Damen gesetzt 
-         --  werden. Deshalb Taucht jede Kombination n!-mal auf.
-         Put_Line ("Anzahl Komb.: " 
-                  & Integer'Image (counter / Fakultaet (Index'Last)));
+         Put_Line ("Anzahl Komb.: " & Integer'Image (counter));
       end if;
    end;
 end Acht_Damen;
