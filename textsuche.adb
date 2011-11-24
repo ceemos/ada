@@ -7,7 +7,7 @@
 --
 -------------------------------------------------------------------------------
 --
---  <PROCEDURE> Textsuche
+--  PROCEDURE Textsuche
 --  Liest zwei Texte ein und testet, ob der 2. im 1. vorkommt.
 --
 
@@ -47,7 +47,7 @@ procedure Textsuche is
                   matchedlen := matchedlen + 1;
                end if;
             end loop;
-            --  Wenn alle Zecieh richtig waren - > Treffer
+            --  Wenn alle Zeichen richtig waren - > Treffer
             if matchedlen = Length (needle) then 
                return True;
             end if;

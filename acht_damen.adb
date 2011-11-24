@@ -34,12 +34,13 @@ begin
       
       --  PROCEDURE Put 
       --
-      --  Gibt ein Schachbrett schoen grafisch aus,
+      --  Gibt ein Schachbrett schoen grafisch aus.
       --
       --  PARAMETERS: 
       --   + stellung: Das Auszugebende Schachbrett
       --  
       procedure Put (stellung : Schachbrett) is 
+      
          --  PROCEDURE Put_Border
          --
          --  Gibt einen Schachbrettmaessigen Rand / Trennstrich aus
@@ -51,6 +52,7 @@ begin
             end loop;
             Put_Line ("+");
          end Put_Border;
+         
       begin
          for y in Index loop
             Put_Border;
@@ -72,34 +74,17 @@ begin
          New_Line;
       end Put;
       
+      
       counter : Integer := 0;
       --  PROCEDURE count
       --
-      --  Hilfsprozedur, die die Anzahl Aufrufe zaehlt. Wir verwendet, um die 
+      --  Hilfsprozedur, die die Anzahl Aufrufe zaehlt. Wird verwendet, um die 
       --  Anzahl mgl. Kombinationen zu zaehlen.
       --
       procedure count is
       begin
          counter := counter + 1;
       end count;
-      
-      --  FUNCTION Fakultaet 
-      --
-      --  Berechnet die Fakultaet der uebergebenen Zahl.
-      --
-      --  PARAMETERS: 
-      --   + zahl: Zahl, deren Fak. berechnet werden soll. (max. 12 oder sowas)
-      --  
-      --  RETURNS: zahl!
-      --  
-      function Fakultaet (zahl : Integer) return Integer is
-      begin
-         if zahl = 1 then
-            return 1;
-         else
-            return Fakultaet (zahl - 1) * zahl;
-         end if;
-      end Fakultaet;
       
       --  FUNCTION ist_Unschlagbar 
       --
@@ -172,7 +157,7 @@ begin
       
          --  PROCEDURE markiere_Bedroht 
          --
-         --  merkiert ein geg. Feld als bedroht.
+         --  markiert ein geg. Feld als bedroht.
          --  Die Stelle darf auch ausserhalb des Bretts liegen; dann wird  
          --  nichts getan.
          --
@@ -232,7 +217,7 @@ begin
                setze_Dame (x, y, brett);
                level_neu := level + 1;
                if level_neu = Index'Last then
-                  Put (brett);
+                  --  Put (brett);
                   count;
                   ziel_erreichbar := True;
                else 
