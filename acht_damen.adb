@@ -1,247 +1,258 @@
 --  FILE: acht_damen.adb
 --
 --  PROJECT: Programmieruebungen, Uebungsblatt 5
---  VERSION: 1
+--  VERSION: 2
 --  DATE: 20. 11. 2011
 --  AUTHOR: Marcel Schneider
 --
 -------------------------------------------------------------------------------
 --
 --  <PROCEDURE> Acht_Damen
---  Findet alle Moeglichkeiten, acht Damen KOllisionsfrei auf einem Schachbrett
---  unterzubringen.
+--  Findet alle Moeglichkeiten, n Damen Kollisionsfrei auf einem Schachbrett
+--  unterzubringen. Das verwendete Verfahren ist allerdings sehr langsam
+--  (~1min fuer 8 Damen)
 --
 
 with Ada.Text_IO;
 use Ada.Text_IO;
+with Ada.Integer_Text_IO;
+use Ada.Integer_Text_IO;
 procedure Acht_Damen is
-
-   --  Typ, der angibt, was sich auf einem Feld des Schachbretts befindet.
-   type Feld is (Frei, Dame, Bedroht);
+   n : Positive;
+begin
+   Put_Line ("Geben Sie die Groesse an:");
+   Get (n);
    
-   --  Hilfstyp fuer die Groesse des Schachbretts
-   subtype Index is Integer range 1 .. 7;
-   
-   --  Typ der ein Schachbrett mitsamt Figuren darstellt.
-   type Schachbrett is array (Index, Index) of Feld;
-   
-   --  PROCEDURE Put 
-   --
-   --  Gibt ein Schachbrett schoen grafisch aus,
-   --
-   --  PARAMETERS: 
-   --   + stellung: Das Auszugebende Schachbrett
-   --  
-   procedure Put (stellung : Schachbrett) is 
-   begin
-      for y in Index loop
-         Put_Line ("+---+---+---+---+---+---+---+---+");
-         for x in Index loop
-            Put ("|");
-            case stellung (x, y) is
-               when Frei =>
-                  Put ("   ");
-               when Dame =>
-                  Put (" D ");
-               when Bedroht =>
-                  Put (" x ");
-            end case;
-         end loop;
-         Put ("|");
-         New_Line;
-      end loop;
-      Put_Line ("+---+---+---+---+---+---+---+---+");
-   end Put;
-   
-   counter : Integer := 0;
-   --  PROCEDURE count
-   --
-   --  Hilfsprozedur, die die Anzahl Aufrufe zaehlt. Wir verwendet, um die 
-   --  Anzahl mgl. Kombinationen zu zaehlen.
-   --
-   procedure count is
-   begin
-      counter := counter + 1;
-   end count;
-   
-   --  FUNCTION Fakultaet 
-   --
-   --  Berechnet die Fakultaet der uebergebenen Zahl.
-   --
-   --  PARAMETERS: 
-   --   + zahl: Zahl, deren Fak. berechnet werden soll. (max. 12 oder sowas)
-   --  
-   --  RETURNS: zahl!
-   --  
-   function Fakultaet (zahl : Integer) return Integer is
-   begin
-      if zahl = 1 then
-         return 1;
-      else
-         return Fakultaet (zahl - 1) * zahl;
-      end if;
-   end Fakultaet;
-   
-   --  FUNCTION ist_Unschlagbar 
-   --
-   --  Prueft, ob eine Figur an Stelle x, y im geg, Schachbrett geschlagen 
-   --  werden koennte.
-   --
-   --  PARAMETERS: 
-   --   + stellung: das zu untersuchende Brett.
-   --   + x: Pos. in x-Richtung
-   --   + y: Pos. in y-Richtung
-   --  
-   --  RETURNS: true, wenn die Figur nicht geschlagen werden koennte, 
-   --  sonst false.
-   --  
-   function ist_Unschlagbar (stellung : Schachbrett; x, y : Index) 
-      return Boolean is
+   declare
+      --  Typ, der angibt, was sich auf einem Feld des Schachbretts befindet.
+      type Feld is (Frei, Dame, Bedroht);
       
-      --  FUNCTION ist_Dame 
+      --  Hilfstyp fuer die Groesse des Schachbretts
+      subtype Index is Integer range 1 .. n;
+      
+      --  Typ der ein Schachbrett mitsamt Figuren darstellt.
+      type Schachbrett is array (Index, Index) of Feld;
+      
+      --  PROCEDURE Put 
       --
-      --  prueft, ob sich an der geg. Stelle eine Dame befindet.
-      --  Die Stelle darf auch ausserhalb des Bretts liegen.
-      --  
+      --  Gibt ein Schachbrett schoen grafisch aus,
+      --
       --  PARAMETERS: 
+      --   + stellung: Das Auszugebende Schachbrett
+      --  
+      procedure Put (stellung : Schachbrett) is 
+      begin
+         for y in Index loop
+            Put_Line ("+---+---+---+---+---+---+---+---+");
+            for x in Index loop
+               Put ("|");
+               case stellung (x, y) is
+                  when Frei =>
+                     Put ("   ");
+                  when Dame =>
+                     Put (" D ");
+                  when Bedroht =>
+                     Put (" x ");
+               end case;
+            end loop;
+            Put ("|");
+            New_Line;
+         end loop;
+         Put_Line ("+---+---+---+---+---+---+---+---+");
+      end Put;
+      
+      counter : Integer := 0;
+      --  PROCEDURE count
+      --
+      --  Hilfsprozedur, die die Anzahl Aufrufe zaehlt. Wir verwendet, um die 
+      --  Anzahl mgl. Kombinationen zu zaehlen.
+      --
+      procedure count is
+      begin
+         counter := counter + 1;
+      end count;
+      
+      --  FUNCTION Fakultaet 
+      --
+      --  Berechnet die Fakultaet der uebergebenen Zahl.
+      --
+      --  PARAMETERS: 
+      --   + zahl: Zahl, deren Fak. berechnet werden soll. (max. 12 oder sowas)
+      --  
+      --  RETURNS: zahl!
+      --  
+      function Fakultaet (zahl : Integer) return Integer is
+      begin
+         if zahl = 1 then
+            return 1;
+         else
+            return Fakultaet (zahl - 1) * zahl;
+         end if;
+      end Fakultaet;
+      
+      --  FUNCTION ist_Unschlagbar 
+      --
+      --  Prueft, ob eine Figur an Stelle x, y im geg, Schachbrett geschlagen 
+      --  werden koennte.
+      --
+      --  PARAMETERS: 
+      --   + stellung: das zu untersuchende Brett.
       --   + x: Pos. in x-Richtung
       --   + y: Pos. in y-Richtung
-      --   + stellung: Das zu untersuchende Brett.
       --  
-      --  RETURNS: false, wenn sich keine Dame an der Stelle befindet oder die 
-      --  Stelle ausserhalb des Feldes liegt, sonst true.
+      --  RETURNS: true, wenn die Figur nicht geschlagen werden koennte, 
+      --  sonst false.
       --  
-      function ist_Dame (x, y : Integer; stellung : Schachbrett) 
-            return Boolean is 
+      function ist_Unschlagbar (stellung : Schachbrett; x, y : Index) 
+         return Boolean is
+         
+         --  FUNCTION ist_Dame 
+         --
+         --  prueft, ob sich an der geg. Stelle eine Dame befindet.
+         --  Die Stelle darf auch ausserhalb des Bretts liegen.
+         --  
+         --  PARAMETERS: 
+         --   + x: Pos. in x-Richtung
+         --   + y: Pos. in y-Richtung
+         --   + stellung: Das zu untersuchende Brett.
+         --  
+         --  RETURNS: false, wenn sich keine Dame an der Stelle befindet 
+         --  oder die Stelle ausserhalb des Feldes liegt, sonst true.
+         --  
+         function ist_Dame (x, y : Integer; stellung : Schachbrett) 
+               return Boolean is 
+         begin
+            return (x >= Index'First and x <= Index'Last and
+                  y >= Index'First and y <= Index'Last)
+                  and then stellung (x, y) = Dame;
+         end ist_Dame;
+         
       begin
-         return (x >= Index'First and x <= Index'Last and
-                 y >= Index'First and y <= Index'Last)
-                 and then stellung (x, y) = Dame;
-      end ist_Dame;
+         if stellung (x, y) = Frei then
+            for i in Index loop
+               if ist_Dame (x + i, y + i, stellung) or
+                  ist_Dame (x - i, y - i, stellung) or
+                  ist_Dame (x - i, y + i, stellung) or
+                  ist_Dame (x + i, y - i, stellung) or
+                  ist_Dame (x, y + i, stellung) or
+                  ist_Dame (x, y - i, stellung) or
+                  ist_Dame (x + i, y, stellung) or
+                  ist_Dame (x - i, y, stellung) then
+                  return False;
+               end if;
+            end loop;
+         else
+            return False;
+         end if;
+         return True;
+      end ist_Unschlagbar;
       
-   begin
-      if stellung (x, y) = Frei then
-         for i in Index loop
-            if ist_Dame (x + i, y + i, stellung) or
-               ist_Dame (x - i, y - i, stellung) or
-               ist_Dame (x - i, y + i, stellung) or
-               ist_Dame (x + i, y - i, stellung) or
-               ist_Dame (x, y + i, stellung) or
-               ist_Dame (x, y - i, stellung) or
-               ist_Dame (x + i, y, stellung) or
-               ist_Dame (x - i, y, stellung) then
-               return False;
-            end if;
-         end loop;
-      else
-         return False;
-      end if;
-      return True;
-   end ist_Unschlagbar;
-   
-   --  PROCEDURE setze_Dame 
-   --
-   --  Setzt eine Dame an die geg. Stelle und markiert alle von der Dame 
-   --  schlagbaren Felder als bedroht.
-   --
-   --   + x: Pos. in x-Richtung
-   --   + y: Pos. in y-Richtung
-   --   + stellung: Das zu veraendernde Brett.
-   --  
-   procedure setze_Dame (x, y : Index; stellung : in out Schachbrett) is
-   
-      --  PROCEDURE markiere_Bedroht 
+      --  PROCEDURE setze_Dame 
       --
-      --  merkiert ein geg. Feld als bedroht.
-      --  Die Stelle darf auch ausserhalb des Bretts liegen; dann wird nichts 
-      --  getan.
+      --  Setzt eine Dame an die geg. Stelle und markiert alle von der Dame 
+      --  schlagbaren Felder als bedroht.
       --
-      --  PARAMETERS: 
       --   + x: Pos. in x-Richtung
       --   + y: Pos. in y-Richtung
       --   + stellung: Das zu veraendernde Brett.
       --  
-      procedure markiere_Bedroht (x, y : Integer; 
-                              stellung : in out Schachbrett) is 
-      begin
-         if (x >= Index'First and x <= Index'Last and
-                 y >= Index'First and y <= Index'Last)
-                 and then stellung (x, y) = Frei then
-            stellung (x, y) := Bedroht;
-         end if;
-      end markiere_Bedroht;
+      procedure setze_Dame (x, y : Index; stellung : in out Schachbrett) is
       
-   begin
-      stellung (x, y) := Dame;
-      for i in Index loop
-         markiere_Bedroht (x + i, y + i, stellung);
-         markiere_Bedroht (x - i, y - i, stellung);
-         markiere_Bedroht (x - i, y + i, stellung);
-         markiere_Bedroht (x + i, y - i, stellung);
-         markiere_Bedroht (x, y + i, stellung);
-         markiere_Bedroht (x, y - i, stellung);
-         markiere_Bedroht (x + i, y, stellung);
-         markiere_Bedroht (x - i, y, stellung);
-      end loop;
---       Put_Line ("Setzte Dame auf " & Integer'Image (x) & "," 
---             & Integer'Image (y));
---       Put (stellung);
-   end setze_Dame;
-   
-   --  FUNCTION konstruiere_Stellungen 
-   --
-   --  Konstruiert Stellungen, bei denen sich n Damen auf einem nxn Felder 
-   --  grossen Schachbrett nicht schlagen koennen.
-   --
-   --  PARAMETERS: 
-   --   + stellung: Zu untersuchendes Schachbrett
-   --   + level: Anzahl Damen, die sich schon auf dem Brett befinden.
-   --  
-   --  RETURNS: true, wenn mindestens eine mgl. Stellung gefunden wurde.
-   --  
-   function konstruiere_Stellungen (stellung : Schachbrett; level : Integer) 
-         return Boolean is
-      brett : Schachbrett := stellung;
-      level_neu : Integer;
-      ziel_erreichbar : Boolean := False;
-   begin
-      for x in Index loop
-         for y in Index loop
-            if brett (x, y) = Frei then
-               setze_Dame (x, y, brett);
-               level_neu := level + 1;
-               if level_neu = Index'Last then
-                  --  Put (brett);
-                  count;
-                  ziel_erreichbar := True;
-               else 
-                  ziel_erreichbar := ziel_erreichbar 
-                                  or konstruiere_Stellungen (brett, level_neu);
-               end if;
+         --  PROCEDURE markiere_Bedroht 
+         --
+         --  merkiert ein geg. Feld als bedroht.
+         --  Die Stelle darf auch ausserhalb des Bretts liegen; dann wird  
+         --  nichts getan.
+         --
+         --  PARAMETERS: 
+         --   + x: Pos. in x-Richtung
+         --   + y: Pos. in y-Richtung
+         --   + stellung: Das zu veraendernde Brett.
+         --  
+         procedure markiere_Bedroht (x, y : Integer; 
+                                 stellung : in out Schachbrett) is 
+         begin
+            if (x >= Index'First and x <= Index'Last and
+                  y >= Index'First and y <= Index'Last)
+                  and then stellung (x, y) = Frei then
+               stellung (x, y) := Bedroht;
             end if;
-            brett := stellung;
+         end markiere_Bedroht;
+         
+      begin
+         stellung (x, y) := Dame;
+         for i in Index loop
+            markiere_Bedroht (x + i, y + i, stellung);
+            markiere_Bedroht (x - i, y - i, stellung);
+            markiere_Bedroht (x - i, y + i, stellung);
+            markiere_Bedroht (x + i, y - i, stellung);
+            markiere_Bedroht (x, y + i, stellung);
+            markiere_Bedroht (x, y - i, stellung);
+            markiere_Bedroht (x + i, y, stellung);
+            markiere_Bedroht (x - i, y, stellung);
          end loop;
-      end loop;
-      return ziel_erreichbar;
-   end konstruiere_Stellungen;
-   
-   brett : Schachbrett := (others => (others => Frei));
-   moeglich : Boolean;
-begin
-   --  setze_Dame (3, 5, brett);
-   --  Put (brett);
-   
---    if ist_Unschlagbar (brett, 1, 1) then
---       Put_Line ("1, 1 ist nicht schlagbar");
---    end if;
+   --       Put_Line ("Setzte Dame auf " & Integer'Image (x) & "," 
+   --             & Integer'Image (y));
+   --       Put (stellung);
+      end setze_Dame;
+      
+      --  FUNCTION konstruiere_Stellungen 
+      --
+      --  Konstruiert Stellungen, bei denen sich n Damen auf einem nxn Felder 
+      --  grossen Schachbrett nicht schlagen koennen.
+      --
+      --  PARAMETERS: 
+      --   + stellung: Zu untersuchendes Schachbrett
+      --   + level: Anzahl Damen, die sich schon auf dem Brett befinden.
+      --  
+      --  RETURNS: true, wenn mindestens eine mgl. Stellung gefunden wurde.
+      --  
+      function konstruiere_Stellungen (stellung : Schachbrett; 
+                                          level : Integer) return Boolean is
+         brett : Schachbrett := stellung;
+         level_neu : Integer;
+         ziel_erreichbar : Boolean := False;
+      begin
+         for x in Index loop
+            for y in Index loop
+               if brett (x, y) = Frei then
+                  setze_Dame (x, y, brett);
+                  level_neu := level + 1;
+                  if level_neu = Index'Last then
+                     --  Put (brett);
+                     count;
+                     ziel_erreichbar := True;
+                  else 
+                     ziel_erreichbar := ziel_erreichbar 
+                        or konstruiere_Stellungen (brett, level_neu);
+                  end if;
+               end if;
+               brett := stellung;
+            end loop;
+         end loop;
+         return ziel_erreichbar;
+      end konstruiere_Stellungen;
+      
+      brett : Schachbrett := (others => (others => Frei));
+      moeglich : Boolean;
+   begin
+      --  setze_Dame (3, 5, brett);
+      --  Put (brett);
+      
+   --    if ist_Unschlagbar (brett, 1, 1) then
+   --       Put_Line ("1, 1 ist nicht schlagbar");
+   --    end if;
 
-   moeglich := konstruiere_Stellungen (brett, 0);
-   if moeglich then
-      Put_Line ("es ist mgl." & Integer'Image (Index'Last) 
-               & " Damen zu setzen");
-      Put_Line ("Anzahl Komb.: " 
-               & Integer'Image (counter / Fakultaet (Index'Last)));
-   end if;
+      moeglich := konstruiere_Stellungen (brett, 0);
+      if moeglich then
+         Put_Line ("es ist mgl." & Integer'Image (Index'Last) 
+                  & " Damen zu setzen");
+         --  Der Algorithmus beachtet die Reihenfolge ind er die Damen gesetzt 
+         --  werden. Deshalb Taucht jede Kombination n!-mal auf.
+         Put_Line ("Anzahl Komb.: " 
+                  & Integer'Image (counter / Fakultaet (Index'Last)));
+      end if;
+   end;
 end Acht_Damen;
 
 --  kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; 
