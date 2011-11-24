@@ -7,10 +7,9 @@
 --
 -------------------------------------------------------------------------------
 --
---  <PROCEDURE> Acht_Damen
+--  PROCEDURE Acht_Damen
 --  Findet alle Moeglichkeiten, n Damen Kollisionsfrei auf einem Schachbrett
---  unterzubringen. Das verwendete Verfahren ist allerdings sehr langsam
---  (~1min fuer 8 Damen)
+--  unterzubringen.
 --
 
 with Ada.Text_IO;
@@ -41,6 +40,10 @@ begin
       --   + stellung: Das Auszugebende Schachbrett
       --  
       procedure Put (stellung : Schachbrett) is 
+         --  PROCEDURE Put_Border
+         --
+         --  Gibt einen Schachbrettmaessigen Rand / Trennstrich aus
+         --
          procedure Put_Border is
          begin
             for i in Index loop
@@ -66,6 +69,7 @@ begin
             New_Line;
          end loop;
          Put_Border;
+         New_Line;
       end Put;
       
       counter : Integer := 0;
@@ -101,6 +105,7 @@ begin
       --
       --  Prueft, ob eine Figur an Stelle x, y im geg, Schachbrett geschlagen 
       --  werden koennte.
+      --  Wird vom Programm nicht verwendet, nur fuer die Aufgabenstellung.
       --
       --  PARAMETERS: 
       --   + stellung: das zu untersuchende Brett.
@@ -251,6 +256,9 @@ begin
          Put_Line ("es ist mgl." & Integer'Image (Index'Last) 
                   & " Damen zu setzen");
          Put_Line ("Anzahl Komb.: " & Integer'Image (counter));
+      else 
+         Put_Line ("es ist nicht mgl." & Integer'Image (Index'Last) 
+                  & " Damen zu setzen");
       end if;
    end;
 end Acht_Damen;
