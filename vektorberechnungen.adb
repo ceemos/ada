@@ -15,10 +15,7 @@
 
 with Ada.Text_IO, Ada.Float_Text_IO, Ada.Integer_Text_IO;
 with Ada.IO_Exceptions;
-<<<<<<< HEAD
-=======
 
->>>>>>> e37e89b4cee9ec81c8f7cd269164abf392098a7d
 procedure vektorberechnungen is
 
    type Vektor is array (Natural range <>) of Float; 
@@ -204,30 +201,6 @@ begin
                Ada.Text_IO.Put_Line ("Anzahl Dimensionen?");
                Ada.Integer_Text_IO.Get (dimension);
                
-<<<<<<< HEAD
-               if auswahl /= 'c' then 
-                  Ada.Text_IO.Put_Line ("Daten fuer 2. Vektor:");
-                  Get (vec_b);
-               end if;
-               case auswahl is 
-                  when 'a' =>
-                     Put (vec_a + vec_b);
-                  when 'b' =>
-                     Put (vec_a + (vec_b * (-1.0)));
-                  when 'c' =>
-                     Ada.Text_IO.Put_Line ("Geben Sie den Skalar an:");
-                     Ada.Float_Text_IO.Get (skalar);
-                     Put (vec_a * skalar);
-                  when 'd' =>
-                     Ada.Float_Text_IO.Put (vec_a * vec_b, 1, 4, 0);
-                     Ada.Text_IO.New_Line;
-                  when others =>
-                     null; --  sollte niemals auftreten, wg. aeusserem case 
-               end case;
-            exception
-               when ADA.IO_EXCEPTIONS.DATA_ERROR =>
-                  Ada.Text_IO.Put_Line ("Bitte geben Zahlen ein!");
-=======
                declare
                   --  passende Vektoren definieren
                   vec_a, vec_b : Vektor (1 .. dimension);
@@ -279,7 +252,6 @@ begin
                when Ada.IO_Exceptions.Data_Error =>
                   Ada.Text_IO.Put_Line ("Geben Sie eine Zahl an!");
                   Ada.Text_IO.New_Line;
->>>>>>> e37e89b4cee9ec81c8f7cd269164abf392098a7d
             end;
             
          when 'e' =>

@@ -19,11 +19,31 @@ procedure Springerproblem is
    subtype Index is Integer range 1 .. 8;
    type Schachbrett is array (Index, Index) of Natural;
    
+   --  @Procedure: Markiere_Erreichbare_Felder 
+   --
+   --  Traegt in den fuer eine Springer von dem geg. Feld aus erreichbaren 
+   --  Feldern die min. anzahl Schritte ein. Verwendet Rekursion um alle Felder 
+   --  zu erreichen.
+   --
+   --  @Parameter: 
+   --   + Brett: Schachbrett in das die Werte eingetragen werden.
+   --   + x: x-Pos. des Feldes
+   --   + y: y-Pos. des Feldes
+   --  
    procedure Markiere_Erreichbare_Felder (Brett : in out Schachbrett; 
                                            x, y :        Index) is
       
       Anzahl_Schritte : Natural := Brett (x, y) + 1; 
       
+      --  @Procedure: Bearbeite_Feld 
+      --
+      --  Treagt ggf. die neue Anzahl Schritte in Schachbrett ein und fuerht 
+      --  die Rekursion durch, igonoriert Felder ausserhalb.
+      --
+      --  @Parameter: 
+      --   + x: x-Pos. des Feldes
+      --   + y: y-Pos. des Feldes
+      --  
       procedure Bearbeite_Feld (x, y : Integer) is
       begin
          --  Felder nur bearbeiten wenn der neue Weg kuerzer als die 
@@ -49,6 +69,19 @@ procedure Springerproblem is
       Bearbeite_Feld (x - 2, y + 1);
    end Markiere_Erreichbare_Felder;
    
+   --  @Function: Bestimme_Erreichbarkeit 
+   --
+   --  Bestimmt die Anzahl Schritte, die ein Springer braucht um vom geg. 
+   --  Feld ein bel. Feld zu erreichen.
+   --
+   --  @Parameter: 
+   --   + x: x-Pos. des Springers
+   --   + y: y-Pos. des Springers
+   --  
+   --  @Return: 
+   --  Ein Schachbrett, in dem in jedem Feld die Anzahl Schritte zu diesem 
+   --  Feld eingetragen ist.
+   --  
    function Bestimme_Erreichbarkeit (x, y : Index) return Schachbrett is
       brett : Schachbrett := (others => (others => Natural'Last));
    begin
@@ -69,12 +102,19 @@ procedure Springerproblem is
    --  PARAMETERS: 
    --   + stellung: Das Auszugebende Schachbrett
    --  
+   
+   
+   
    procedure Put (stellung : Schachbrett) is 
       
       --  PROCEDURE Put_Border
       --
       --  Gibt einen Schachbrettmaessigen Rand / Trennstrich aus
       --
+      
+      
+      
+      
       procedure Put_Border is
       begin
          for i in Index loop
