@@ -13,10 +13,14 @@
 --
 
 
-with Ada.Text_IO;
+with Ada.Text_IO, Ada.Integer_Text_IO;
 use Ada.Text_IO;
 procedure Springerproblem is
+
+   --  Hilfstyp fuer die Groesse des Schachbretts
    subtype Index is Integer range 1 .. 8;
+      
+   --  Typ der ein Schachbrett mit Zahlen darstellt.
    type Schachbrett is array (Index, Index) of Natural;
    
    --  @Procedure: Markiere_Erreichbare_Felder 
@@ -83,38 +87,29 @@ procedure Springerproblem is
    --  Feld eingetragen ist.
    --  
    function Bestimme_Erreichbarkeit (x, y : Index) return Schachbrett is
+      --  Brett mit grossen Zahlen fuellen, damit die gef. Wege kuerzer sind.
       brett : Schachbrett := (others => (others => Natural'Last));
    begin
+      --  Den Springer setzen
       brett (x, y) := 0;
-      begin
-         Markiere_Erreichbare_Felder (brett, x, y);
-      exception
-         when Storage_Error =>
-            null; --  Nach vielen Rek. aufhoeren
-      end;
+      --  Die Wege ermitteln lassen
+      Markiere_Erreichbare_Felder (brett, x, y);
       return brett;
    end Bestimme_Erreichbarkeit;
+
    
-   --  PROCEDURE Put 
+   --  @Procedure: Put 
    --
    --  Gibt ein Schachbrett schoen grafisch aus.
    --
-   --  PARAMETERS: 
+   --  @Parameter: 
    --   + stellung: Das Auszugebende Schachbrett
    --  
-   
-   
-   
    procedure Put (stellung : Schachbrett) is 
-      
-      --  PROCEDURE Put_Border
+      --  @Procedure: Put_Border
       --
       --  Gibt einen Schachbrettmaessigen Rand / Trennstrich aus
       --
-      
-      
-      
-      
       procedure Put_Border is
       begin
          for i in Index loop
@@ -138,9 +133,28 @@ procedure Springerproblem is
       New_Line;
    end Put;
       
-   
+   --  Startposition des Springers
+   x, y : Index;
 begin
-   Put (Bestimme_Erreichbarkeit (1, 1));
+   Put_Line ("Wo soll der Springer starten?");
+   --  Pos. Einlesen
+   Put ("X = ");
+   Ada.Integer_Text_IO.Get (x);
+   Put ("Y = ");
+   Ada.Integer_Text_IO.Get (y);
+   
+   --  Berechnen und Ausgeben
+   Put (Bestimme_Erreichbarkeit (x, y));
+exception
+   when Constraint_Error =>
+      Put_Line ("Geben Sie eine Zahl zw."  & Index'Image (Index'First) 
+         & " und" & Index'Image (Index'Last) & " ein!");
+      --  Neustarten
+      Springerproblem;
+   when Data_Error =>
+      Put_Line ("Geben Sie eine Zahl zw."  & Index'Image (Index'First) 
+         & " und" & Index'Image (Index'Last) & " ein!");
+      --  Ende, den Input-Buffer leeren ist aufwaendig.
 end Springerproblem;
 
 --  kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; 
