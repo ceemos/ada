@@ -1,0 +1,12 @@
+unerfuellbare: 145  erfuellbare: 7098
+unerfuellbare: 145  erfuellbare: 7099
+unerfuellbare: 145  erfuellbare: 7100
+{EB, be, Be, DA, Ea, dE, B, e, ba, bd, Ba, Bd, DE, AE, ab, aB, ED, db, dB, EA, Ed, ea, ed, bD, bA, BD, BA, Db, Ab, DB, AB, a, E, d, D, A, aE, ae, ad, bE, de, da, BE, Eb, eD, eA, b, De, Ae, , aD, dA, Da, Ad, eb, eB, AD, }
+unerfuellbare: 146  erfuellbare: 7100
+Got It!
+{EB, be, Be, DA, Ea, dE, }
+
+real    0m3.926s
+user    0m3.276s
+sys     0m0.013s
+Press any key to continue.

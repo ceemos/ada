@@ -14,6 +14,7 @@
 with Ada.Text_IO;
 with Ada.Characters.Handling;
 with Ada.Containers.Vectors;
+with Ada.Numerics.Discrete_Random;
 use Ada.Text_IO;
 procedure Res is
    subtype Index is Integer range 1 .. 8;
@@ -223,7 +224,7 @@ procedure Res is
             end if;
             --  Put (f_neu);
             if f_neu.Contains (Leer) then
-               Put_Line ("Hab leer als LinRes");
+               --  Put_Line ("Hab leer als LinRes");
                Put ("Erg: ");
                Put (f_neu);
                moeglich := True;
@@ -232,8 +233,8 @@ procedure Res is
             if not moeglich then 
                moeglich := LinRes (f_neu, r);
                if moeglich then
-                  Put ("Weg: ");
-                  Put (f_neu);
+                  --  Put ("Weg: ");
+                  --  Put (f_neu);
                   return;
                end if;
             end if;
@@ -249,15 +250,15 @@ procedure Res is
       f : Formel := f_in;
    begin
       loop
-         Put (f);
+         --  Put (f);
          rf := Res (f);
          merge (f, rf);
          if rf.Contains (Leer) then
             Put (f);
-            Put_Line ("Hab die leere Klausel, Schluss.");
+            --  Put_Line ("Hab die leere Klausel, Schluss.");
             return True;
          elsif rf.Length = 0 then
-            Put_Line ("Kann nimmer resolvieren, Schluss.");
+            --  Put_Line ("Kann nimmer resolvieren, Schluss.");
             return False;
          end if;
       end loop;
@@ -281,25 +282,105 @@ procedure Res is
       return moeglich;
    end LinRes;
    
-      
+   subtype alphas is Integer range 1 .. 10;
+   package Rand_Alpha is new Ada.Numerics.Discrete_Random (alphas);
+   seed : Rand_Alpha.Generator;
+   literale : String := "abABcdCDeE";
+   
+   function Zufaellige_Klausel (len : Index) return Klausel is 
+      k : Klausel;
+      c : Character;
+   begin
+      k := Leer;
+      while k.len < len loop
+         c := literale (Rand_Alpha.Random (seed));
+         if not k.contains (neg (c)) then
+            k.add (c);
+         end if;
+      end loop;
+      return k;
+   end Zufaellige_Klausel;
+   
+   function Zufaellige_Neg_Klausel (len : Index) return Klausel is 
+      k : Klausel;
+      c : Character;
+   begin
+      k := Leer;
+      while k.len < len loop
+         c := literale (Rand_Alpha.Random (seed));
+         if Ada.Characters.Handling.Is_Upper (c) then
+            k.add (c);
+         end if;
+      end loop;
+      return k;
+   end Zufaellige_Neg_Klausel;
+   
+   function Zufaellige_Pos_Klausel (len : Index) return Klausel is 
+      k : Klausel;
+      c : Character;
+   begin
+      k := Leer;
+      while k.len < len loop
+         c := literale (Rand_Alpha.Random (seed));
+         if not Ada.Characters.Handling.Is_Upper (c) then
+            k.add (c);
+         end if;
+      end loop;
+      return k;
+   end Zufaellige_Pos_Klausel;
+   
+   function Zufaellige_Formel (len : Natural) return Formel is 
+      f : Formel;
+   begin
+      f.Append (Zufaellige_Neg_Klausel (2));
+      f.Append (Zufaellige_Pos_Klausel (2));
+      for i in 1 .. len loop
+         f.Append (Zufaellige_Klausel (2));
+      end loop;
+      return f;
+   end Zufaellige_Formel;
    
    
    k : Klausel;
    f : Formel;
+   
+   unerfuellbar : Boolean;
+   linresbar : Boolean;
+   
+   erfuellbare, unerfuellbare : Natural := 0;
 begin
+
+   Rand_Alpha.Reset (seed);
    
-   Append (f, ("ab      ", 3));
-   Append (f, ("AB      ", 3));
-   Append (f, ("aB      ", 3));
-   Append (f, ("Ab      ", 3));
+--    Append (f, ("ab      ", 3));
+--    Append (f, ("AB      ", 3));
+--    Append (f, ("aB      ", 3));
+--    Append (f, ("Ab      ", 3));
    
-   if LinRes (f) then
-      Put_Line ("LinRes mgl.");
-   end if;
-   
-   if normRes (f) then
-      Put_Line ("f unerfuellbar");
-   end if;
+   loop
+      f := Zufaellige_Formel (4);
+      unerfuellbar := normRes (f);
+      
+      if unerfuellbar then
+         --  Put_Line ("f unerfuellbar");
+         unerfuellbare := unerfuellbare + 1;
+         Put_Line ("unerfuellbare:" & Integer'Image (unerfuellbare) 
+            & "  erfuellbare:" & Integer'Image (erfuellbare));
+         linresbar := LinRes (f);
+         if linresbar then
+            --  Put_Line ("LinRes mgl.");
+            null;
+         else
+            Put_Line ("Got It!");
+            Put (f);
+            exit;
+         end if;
+      else 
+         erfuellbare := erfuellbare + 1;
+         Put_Line ("unerfuellbare:" & Integer'Image (unerfuellbare) 
+            & "  erfuellbare:" & Integer'Image (erfuellbare));
+      end if;
+   end loop;
 
 --    k := Leer;
 --    k.add ('a');
