@@ -160,22 +160,21 @@ procedure Res is
       a, b, r : Klausel;
       wrt : Character;
       
-      procedure overA (c : Cursor) is
-      
-         procedure overB (d : Cursor) is
-         begin
-            b := Element (d);
-            if a.isPositive or b.isPositive then
-               wrt := CanRes (a, b);
-               if wrt /= ' ' then
-                  r := DoRes (a, b, wrt);
-                  if not Contains (rf, r) and not Contains (f, r) then
-                     Append (rf, r);
-                  end if;
+      procedure overB (d : Cursor) is
+      begin
+         b := Element (d);
+         --  if a.isPositive or b.isPositive then --  PosRes
+            wrt := CanRes (a, b);
+            if wrt /= ' ' then
+               r := DoRes (a, b, wrt);
+               if not Contains (rf, r) and not Contains (f, r) then
+                  Append (rf, r);
                end if;
             end if;
-         end overB;
+         --  end if;
+      end overB;
          
+      procedure overA (c : Cursor) is 
       begin
          a := Element (c);
          Iterate (f, overB'Access);
@@ -199,33 +198,108 @@ procedure Res is
       what.Iterate (each'Access);
    end merge;
    
+   function LinRes (f : Formel; wrt : Klausel) return Boolean is
+      moeglich : Boolean := False;  
+      
+      procedure each (c : Cursor) is 
+         k : Klausel;
+         r : Klausel;
+         res_wrt : Character;
+         f_neu : Formel := f;
+
+      begin
+         if moeglich then return; end if;
+         k := Element (c);
+         if not isPositive (k) and not isPositive (wrt) then
+            return; -- LinPosRes
+         end if;
+         res_wrt := CanRes (k, wrt);
+         if res_wrt /= ' ' then
+            r := DoRes (k, wrt, res_wrt);
+            if not f_neu.Contains (r) then
+               f_neu.Append (r);
+            else 
+               return;
+            end if;
+            --  Put (f_neu);
+            if f_neu.Contains (Leer) then
+               Put_Line ("Hab leer als LinRes");
+               Put ("Erg: ");
+               Put (f_neu);
+               moeglich := True;
+               return;
+            end if;
+            if not moeglich then 
+               moeglich := LinRes (f_neu, r);
+               if moeglich then
+                  Put ("Weg: ");
+                  Put (f_neu);
+                  return;
+               end if;
+            end if;
+         end if;
+      end each;
+   begin
+      f.Iterate (each'Access);
+      return moeglich;
+   end LinRes;
+   
+   function normRes (f_in : Formel) return Boolean is 
+      rf : Formel;
+      f : Formel := f_in;
+   begin
+      loop
+         Put (f);
+         rf := Res (f);
+         merge (f, rf);
+         if rf.Contains (Leer) then
+            Put (f);
+            Put_Line ("Hab die leere Klausel, Schluss.");
+            return True;
+         elsif rf.Length = 0 then
+            Put_Line ("Kann nimmer resolvieren, Schluss.");
+            return False;
+         end if;
+      end loop;
+   end normRes;
+      
+   
+   function LinRes (f : Formel) return Boolean is
+      moeglich : Boolean := False;
+      procedure each (c : Cursor) is 
+         k : Klausel;
+      begin
+         if moeglich then return; end if;
+         k := Element (c);
+         if LinRes (f, k) then
+            moeglich := True;
+            return;
+         end if;
+      end each;
+   begin 
+      f.Iterate (each'Access);
+      return moeglich;
+   end LinRes;
+   
+      
+   
    
    k : Klausel;
    f : Formel;
-   rf : Formel;
-   
-   box : Klausel;
 begin
-   box := Leer;
    
    Append (f, ("ab      ", 3));
    Append (f, ("AB      ", 3));
    Append (f, ("aB      ", 3));
    Append (f, ("Ab      ", 3));
    
-   loop
-      Put (f);
-      rf := Res (f);
-      merge (f, rf);
-      if rf.Contains (box) then
-         Put (f);
-         Put_Line ("Hab die leere Klausel, Schluss.");
-         exit;
-      elsif rf.Length = 0 then
-         Put_Line ("Kann nimmer resolvieren, Schluss.");
-         exit;
-      end if;
-   end loop;
+   if LinRes (f) then
+      Put_Line ("LinRes mgl.");
+   end if;
+   
+   if normRes (f) then
+      Put_Line ("f unerfuellbar");
+   end if;
 
 --    k := Leer;
 --    k.add ('a');
