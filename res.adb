@@ -18,7 +18,7 @@ use Ada.Text_IO;
 procedure Res is
    subtype Index is Integer range 1 .. 8;
    
-   package Logik is
+   package Klauseln is
       type Klausel is tagged record
          data : String (Index);
          pos : Index;
@@ -39,10 +39,12 @@ procedure Res is
          
       function DoRes (left : Klausel; right : Klausel; wrt : Character) 
          return Klausel;
+         
+      function isPositive (this : Klausel) return Boolean;
 
-   end Logik;
+   end Klauseln;
    
-   package body Logik is
+   package body Klauseln is
       procedure add (this : in out Klausel; what : Character) is
       begin
          if this.contains (what) then return; end if;
@@ -115,17 +117,28 @@ procedure Res is
          end loop;
          return r;
       end DoRes;
+      
+      function isPositive (this : Klausel) return Boolean is
+      begin
+         for i in Index'First .. this.len loop
+            if Ada.Characters.Handling.Is_Upper (this.data (i)) then
+               return False;
+            end if;
+         end loop;
+         return True;
+      end isPositive;
          
       
-   end Logik;
+   end Klauseln;
    
-   use Logik;
+   use Klauseln;
    
    package Formeln is new Ada.Containers.Vectors
      (Element_Type => Klausel,
       Index_Type => Natural);
    subtype Formel is Formeln.Vector; 
    use Formeln;
+   use Ada.Containers;
    
    procedure Put (f : Formel) is
       procedure over (d : Cursor) is
@@ -152,11 +165,13 @@ procedure Res is
          procedure overB (d : Cursor) is
          begin
             b := Element (d);
-            wrt := CanRes (a, b);
-            if wrt /= ' ' then
-               r := DoRes (a, b, wrt);
-               if not Contains (rf, r) then
-                  Append (rf, r);
+            if a.isPositive or b.isPositive then
+               wrt := CanRes (a, b);
+               if wrt /= ' ' then
+                  r := DoRes (a, b, wrt);
+                  if not Contains (rf, r) and not Contains (f, r) then
+                     Append (rf, r);
+                  end if;
                end if;
             end if;
          end overB;
@@ -188,30 +203,39 @@ procedure Res is
    k : Klausel;
    f : Formel;
    rf : Formel;
+   
+   box : Klausel;
 begin
+   box := Leer;
+   
    Append (f, ("ab      ", 3));
    Append (f, ("AB      ", 3));
    Append (f, ("aB      ", 3));
    Append (f, ("Ab      ", 3));
-   Put (f);
-   rf := Res (f);
-   merge (f, rf);
-   Put (f);
-   rf := Res (f);
-   merge (f, rf);
-   Put (f);
+   
+   loop
+      Put (f);
       rf := Res (f);
-   merge (f, rf);
-   Put (f);
-   k := Leer;
-   k.add ('a');
-   k.add ('B');
-   k.add ('B');
-   k.add ('c');
-   k.add (neg ('d'));
-   Put_Line (k.data);
-   Put (Integer'Image (DoRes (("Ab      ", 3), ("ac      ", 3), 'a').len));
-   Put (DoRes (("Ab      ", 3), ("ac      ", 3), 'a').data);
+      merge (f, rf);
+      if rf.Contains (box) then
+         Put (f);
+         Put_Line ("Hab die leere Klausel, Schluss.");
+         exit;
+      elsif rf.Length = 0 then
+         Put_Line ("Kann nimmer resolvieren, Schluss.");
+         exit;
+      end if;
+   end loop;
+
+--    k := Leer;
+--    k.add ('a');
+--    k.add ('B');
+--    k.add ('B');
+--    k.add ('c');
+--    k.add (neg ('d'));
+--    Put_Line (k.data);
+--    Put (Integer'Image (DoRes (("Ab      ", 3), ("ac      ", 3), 'a').len));
+--    Put (DoRes (("Ab      ", 3), ("ac      ", 3), 'a').data);
 end Res;
 
 --  kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; 
