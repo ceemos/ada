@@ -31,6 +31,13 @@ procedure Koerper2 is
       end case;
    end record;
    
+   --  @Procedure: Put 
+   --
+   --  Gibt die Daten eines Koerpers aus.
+   --
+   --  @Parameter: 
+   --   + k: der Koerper.
+   --  
    procedure Put (k : Koerper) is
    begin
       case k.Typ is
@@ -51,6 +58,15 @@ procedure Koerper2 is
       end case;
    end Put;
    
+   --  @Function: Koerper_Volumen 
+   --
+   --  Berechnet des Volumen eines Koerpers
+   --
+   --  @Parameter: 
+   --   + k: der Koerper.
+   --  
+   --  @Return: Das Volumen des Koerpers.
+   --  
    function Koerper_Volumen (k : Koerper) return Mass is
    begin
       case k.Typ is
@@ -68,6 +84,15 @@ procedure Koerper2 is
       end case;
    end Koerper_Volumen;
    
+   --  @Function: Koerper_Oberflaeche 
+   --
+   --  Berechner die Oberflaeche eines Koerpers.
+   --
+   --  @Parameter: 
+   --   + k: der Koerper.
+   --  
+   --  @Return: Die Oberflaeche des Koerpers.
+   --  
    function Koerper_Oberflaeche (k : Koerper) return Mass is
    begin
       case k.Typ is
