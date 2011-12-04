@@ -22,7 +22,8 @@ procedure Game_of_Life is
    
    type Platz is (Frei, Belegt);
    
-   type Index is mod 8;
+   --  Ermoeglicht automatisch die Torus-Form
+   type Index is mod 4;
    
    type Pool is array (Index, Index) of Platz;
    
@@ -40,11 +41,11 @@ procedure Game_of_Life is
    end Put;
    
    package R is new Ada.Numerics.Discrete_Random (Platz);
-   
+   --  G : R.Generator;
    procedure Initiate (Feld : in out Pool) is
       G : R.Generator;
    begin
-      R.Reset (G);
+      R.Reset (G); 
       for y in Index loop
          for x in Index loop
             Feld (x, y) := R.Random (G);
@@ -106,7 +107,7 @@ procedure Game_of_Life is
    Geschichte : Pools;
    Feld : Pool;
 begin
-   
+   <<Anfang>>
    Initiate (Feld);
    
    Put_Line ("Startbelegung:");
@@ -123,6 +124,11 @@ begin
    Put_Line ("Zyklus nach" & Natural'Image (Cycle_Start) & " Schritten.");
    
    Anzahl_Schritte := Natural (Geschichte.Length) - Cycle_Start;
+   
+   if Anzahl_Schritte = 1 then
+      Geschichte.Clear;
+      goto Anfang;
+   end if;
    
    Put_Line ("Zykluslaenge:" & Natural'Image (Anzahl_Schritte) & " Schritte");
     
