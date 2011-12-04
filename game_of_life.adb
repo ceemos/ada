@@ -15,6 +15,9 @@ with Ada.Text_IO;
 with Ada.Integer_Text_IO;
 use Ada.Text_IO;
 with Ada.Numerics.Discrete_Random;
+
+with Ada.Containers.Vectors;
+
 procedure Game_of_Life is
    
    type Platz is (Frei, Belegt);
@@ -91,16 +94,41 @@ procedure Game_of_Life is
       end loop;
    end Next;
    
+   package Pool_Vectors is new Ada.Containers.Vectors
+     (Element_Type => Pool,
+      Index_Type => Natural);
+   subtype Pools is Pool_Vectors.Vector;
+   use Ada.Containers;
+   
    
    Anzahl_Schritte : Natural;
+   Cycle_Start : Natural;
+   Geschichte : Pools;
    Feld : Pool;
 begin
+   
    Initiate (Feld);
+   
    Put_Line ("Startbelegung:");
    Put (Feld);
-   Put_Line ("Wie viele Folgebelegungen sollen berechnet werden?");
-   Ada.Integer_Text_IO.Get (Anzahl_Schritte);
    
+   loop
+      Geschichte.Append (Feld);
+      Next (Feld);
+      exit when Geschichte.Contains (Feld);
+   end loop;
+   
+   Cycle_Start := Geschichte.Find_Index (Feld);
+   
+   Put_Line ("Zyklus nach" & Natural'Image (Cycle_Start) & " Schritten.");
+   
+   Anzahl_Schritte := Natural (Geschichte.Length) - Cycle_Start;
+   
+   Put_Line ("Zykluslaenge:" & Natural'Image (Anzahl_Schritte) & " Schritte");
+    
+--    Put_Line ("Wie viele Folgebelegungen sollen berechnet werden?");
+--    Ada.Integer_Text_IO.Get (Anzahl_Schritte);
+
    for I in 1 .. Anzahl_Schritte loop
       Put_Line (Natural'Image (I) & ". Folgebelegung:");
       Next (Feld);
