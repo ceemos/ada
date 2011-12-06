@@ -231,6 +231,8 @@ procedure Res is
                return;
             end if;
             if not moeglich then 
+               --  Put ("Try: ");
+               --  Put (f_neu);
                moeglich := LinRes (f_neu, r);
                if moeglich then
                   --  Put ("Weg: ");
@@ -285,7 +287,7 @@ procedure Res is
    subtype alphas is Integer range 1 .. 8;
    package Rand_Alpha is new Ada.Numerics.Discrete_Random (alphas);
    seed : Rand_Alpha.Generator;
-   literale : String := "abABcdCDeE";
+   literale : String := "aAbBcCdDeEfF";
    
    function Zufaellige_Klausel (len : Index) return Klausel is 
       k : Klausel;
@@ -377,8 +379,8 @@ begin
          end if;
       else 
          erfuellbare := erfuellbare + 1;
-         Put_Line ("unerfuellbare:" & Integer'Image (unerfuellbare) 
-            & "  erfuellbare:" & Integer'Image (erfuellbare));
+--          Put_Line ("unerfuellbare:" & Integer'Image (unerfuellbare) 
+--             & "  erfuellbare:" & Integer'Image (erfuellbare));
       end if;
    end loop;
 

@@ -1,0 +1,57 @@
+...
+X . X X 
+X X X X 
+. . . . 
+Zyklus nach 3 Schritten.
+Startbelegung:
+X X X . 
+. . . . 
+. . . . 
+X X X . 
+Zyklus nach 0 Schritten.
+Zykluslaenge: 2 Schritte
+ 1. Folgebelegung:
+. . . . 
+X . X X 
+X . X X 
+. . . . 
+
+ 2. Folgebelegung:
+X X X . 
+. . . . 
+. . . . 
+X X X . 
+
+
+real    0m34.743s
+user    0m7.554s
+sys     0m13.497s
+Press any key to continue.
+
+
+
+Startbelegung:
+. . . . 
+X X . . 
+X X X . 
+. X . X 
+Zyklus nach 2 Schritten.
+Zykluslaenge: 2 Schritte
+ 1. Folgebelegung:
+. . . . 
+X X X . 
+X X X . 
+. . . . 
+
+ 2. Folgebelegung:
+X . X X 
+. . . . 
+. . . . 
+X . X X 
+
+
+real    0m21.918s
+user    0m4.515s
+sys     0m8.986s
+Press any key to continue.
+

@@ -1,6 +1,6 @@
 --  @File: springerproblem.adb
 --
---  @Project: Programmieruebungen, Uebungsblatt 1
+--  @Project: Programmieruebungen, Uebungsblatt 6
 --  @Version: 1
 --  @Created: 27. 11. 2011
 --  @Author: Marcel Schneider
@@ -41,7 +41,7 @@ procedure Springerproblem is
       
       --  @Procedure: Bearbeite_Feld 
       --
-      --  Treagt ggf. die neue Anzahl Schritte in Schachbrett ein und fuerht 
+      --  Traegt ggf. die neue Anzahl Schritte in Schachbrett ein und fuehrt 
       --  die Rekursion durch, igonoriert Felder ausserhalb.
       --
       --  @Parameter: 
