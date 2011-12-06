@@ -18,7 +18,7 @@ use Ada.Text_IO;
 procedure Springerproblem is
 
    --  Hilfstyp fuer die Groesse des Schachbretts
-   subtype Index is Integer range 1 .. 8;
+   subtype Index is Integer range 1 .. 4;
       
    --  Typ der ein Schachbrett mit Zahlen darstellt.
    type Schachbrett is array (Index, Index) of Natural;
@@ -26,8 +26,8 @@ procedure Springerproblem is
    --  @Procedure: Markiere_Erreichbare_Felder 
    --
    --  Traegt in den fuer eine Springer von dem geg. Feld aus erreichbaren 
-   --  Feldern die min. anzahl Schritte ein. Verwendet Rekursion um alle Felder 
-   --  zu erreichen.
+   --  Feldern die min. anzahl Schritte ein. Verwendet Rekursion um alle 
+   --  Felder zu erreichen.
    --
    --  @Parameter: 
    --   + Brett: Schachbrett in das die Werte eingetragen werden.

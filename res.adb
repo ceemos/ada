@@ -282,7 +282,7 @@ procedure Res is
       return moeglich;
    end LinRes;
    
-   subtype alphas is Integer range 1 .. 10;
+   subtype alphas is Integer range 1 .. 8;
    package Rand_Alpha is new Ada.Numerics.Discrete_Random (alphas);
    seed : Rand_Alpha.Generator;
    literale : String := "abABcdCDeE";
@@ -358,7 +358,7 @@ begin
 --    Append (f, ("Ab      ", 3));
    
    loop
-      f := Zufaellige_Formel (4);
+      f := Zufaellige_Formel (3);
       unerfuellbar := normRes (f);
       
       if unerfuellbar then
