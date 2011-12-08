@@ -1,17 +1,21 @@
 Blatt 7, Aufgabe 1
 
-* a)
+*** a)
   Kürzestes Wort: <<<aaxaaaa>>>
 
-* b)
-  1, Falls l - 6 teilbar durch 8, sonst 0.
+*** b)
+  1, Falls $l - 6$ teilbar durch 8, sonst 0.
 
-* c)
+*** c)
   Jedes Wort enthält die Sequenz <<<aaxaaaa>>>, wobei vorn beliebig oft  <<<aa>>> und hinten genau so oft <<<aaaaaa>>> angefügt sein kann.
 
-* d)
+*** d)
 --------------------------------------
 P = {
   <S> ::= 'a' 'a' 'x' 'a' 'a' 'a' 'a' | 'a' 'a' <S> 'a' 'a' 'a' 'a' 'a' 'a'
 }
 --------------------------------------
+
+*** e)
+  
+[ebnf-blatt7][1.0] Syntaxdiagramm zu d)
