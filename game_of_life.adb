@@ -21,10 +21,10 @@ with Ada.Containers.Vectors;
 
 procedure Game_of_Life is
    
-   --  TYp fuer die Zustaende, die ein Platz annehmen kann.
+   --  Typ fuer die Zustaende, die ein Platz annehmen kann.
    type Platz is (Frei, Belegt);
    
-   --  TYp fuer alle Indizes die in den Pool zeigen
+   --  Typ fuer alle Indizes die in den Pool zeigen
    --  Ermoeglicht automatisch die Torus-Form
    type Index is mod 8;
    
@@ -43,7 +43,7 @@ procedure Game_of_Life is
       for Y in Index loop
          for X in Index loop
             case Feld (X, Y) is
-               when Frei   => Put (". ");
+               when Frei   => Put ("O ");
                when Belegt => Put ("X ");
             end case;
          end loop;
@@ -74,7 +74,7 @@ procedure Game_of_Life is
    
    --  @Function: "+" 
    --
-   --  Addiert 1 zu einem Integer, falls ein paltz belegt ist, und ermoeglicht 
+   --  Addiert 1 zu einem Integer, falls ein Platz belegt ist, und ermoeglicht 
    --  so das Zaehlen belegter Plaetze.
    --
    --  @Parameter: 
@@ -143,55 +143,32 @@ procedure Game_of_Life is
       end loop;
    end Next;
    
---    package Pool_Vectors is new Ada.Containers.Vectors
---      (Element_type => Pool,
---       Index_type => Natural);
---    subtype Pools is Pool_Vectors.Vector;
---    use Ada.Containers;
    
-   
-   Anzahl_Schritte : Natural;
---    Cycle_Start : Natural;
---    Geschichte : Pools;
-   Feld : Pool;
-   
-   Leer : Pool := (others => (others => Frei));
 begin
-   Initiate (Feld);
-   
-   Put_Line ("Startbelegung:");
-   Put (Feld);
-   
---    loop
---       Geschichte.Append (Feld);
---       Next (Feld);
---       exit when Geschichte.Contains (Feld);
---    end loop;
---    
---    Cycle_Start := Geschichte.Find_Index (Feld);
---    
---    Put_Line ("Zyklus nach" & Natural'Image (Cycle_Start) & " Schritten.");
---    
---    Anzahl_Schritte := Natural (Geschichte.Length) - Cycle_Start;
---    
---    if Feld = Leer then 
---    --  if Anzahl_Schritte = 1 then
---       Geschichte.Clear;
---       goto Anfang;
---    end if;
---    
---    Put_Line ("Zykluslaenge:" & Natural'Image (Anzahl_Schritte) & " Schritte");
-    
-   Put_Line ("Wie viele Folgebelegungen sollen berechnet werden?");
-   Ada.Integer_Text_IO.Get (Anzahl_Schritte);
-
-   for I in 1 .. Anzahl_Schritte loop
-      Put_Line (Natural'Image (I) & ". Folgebelegung:");
-      Next (Feld);
+   declare 
+      Anzahl_Schritte : Natural;
+      Feld : Pool;
+   begin 
+      Initiate (Feld);
+      
+      Put_Line ("Startbelegung:");
       Put (Feld);
-      New_Line;
-   end loop;
+      
+      Put_Line ("Wie viele Folgebelegungen sollen berechnet werden?");
+      Ada.Integer_Text_IO.Get (Anzahl_Schritte);
+
+      for I in 1 .. Anzahl_Schritte loop
+         Put_Line (Natural'Image (I) & ". Folgebelegung:");
+         Next (Feld);
+         Put (Feld);
+         New_Line;
+      end loop;
+      
+   exception 
+      when Constraint_Error | Data_Error =>
+         Put_Line ("Bitte geben Sie eine positive Zahl ein!"); 
+   end;
 end Game_of_Life;
 
---  kate: indent-width 3; indent-mode normal; dYnamic-word-wrap on; 
---  kate: line-numbers on; space-indent on; miXed-indent off;
+--  kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; 
+--  kate: line-numbers on; space-indent on; mixed-indent off;
