@@ -12,9 +12,9 @@
 --
 
 
-with Ada.TeXt_IO;
-with Ada.Integer_TeXt_IO;
-use Ada.TeXt_IO;
+with Ada.Text_IO;
+with Ada.Integer_Text_IO;
+use Ada.Text_IO;
 with Ada.Numerics.Discrete_Random;
 
 with Ada.Containers.Vectors;
@@ -22,18 +22,18 @@ with Ada.Containers.Vectors;
 procedure Game_of_Life is
    
    --  TYp fuer die Zustaende, die ein Platz annehmen kann.
-   tYpe Platz is (Frei, Belegt);
+   type Platz is (Frei, Belegt);
    
    --  TYp fuer alle Indizes die in den Pool zeigen
    --  Ermoeglicht automatisch die Torus-Form
-   tYpe Index is mod 8;
+   type Index is mod 8;
    
    --  Der Pool selbst
-   tYpe Pool is arraY (Index, Index) of Platz;
+   type Pool is arraY (Index, Index) of Platz;
    
    --  @Procedure: Put 
    --
-   --  Gibt die Belegung des Pools graphisch als TeXt aus.
+   --  Gibt die Belegung des Pools graphisch als Text aus.
    --
    --  @Parameter: 
    --   + Feld: Die auzugebende Belegung
@@ -143,48 +143,47 @@ procedure Game_of_Life is
       end loop;
    end Next;
    
-   package Pool_Vectors is new Ada.Containers.Vectors
-     (Element_TYpe => Pool,
-      Index_TYpe => Natural);
-   subtYpe Pools is Pool_Vectors.Vector;
-   use Ada.Containers;
+--    package Pool_Vectors is new Ada.Containers.Vectors
+--      (Element_type => Pool,
+--       Index_type => Natural);
+--    subtype Pools is Pool_Vectors.Vector;
+--    use Ada.Containers;
    
    
    Anzahl_Schritte : Natural;
-   CYcle_Start : Natural;
-   Geschichte : Pools;
+--    Cycle_Start : Natural;
+--    Geschichte : Pools;
    Feld : Pool;
    
    Leer : Pool := (others => (others => Frei));
 begin
-   <<Anfang>>
    Initiate (Feld);
    
    Put_Line ("Startbelegung:");
    Put (Feld);
    
-   loop
-      Geschichte.Append (Feld);
-      Next (Feld);
-      eXit when Geschichte.Contains (Feld);
-   end loop;
-   
-   CYcle_Start := Geschichte.Find_Index (Feld);
-   
-   Put_Line ("Zyklus nach" & Natural'Image (CYcle_Start) & " Schritten.");
-   
-   Anzahl_Schritte := Natural (Geschichte.Length) - CYcle_Start;
-   
-   if Feld = Leer then 
-   --  if Anzahl_Schritte = 1 then
-      Geschichte.Clear;
-      goto Anfang;
-   end if;
-   
-   Put_Line ("Zykluslaenge:" & Natural'Image (Anzahl_Schritte) & " Schritte");
+--    loop
+--       Geschichte.Append (Feld);
+--       Next (Feld);
+--       exit when Geschichte.Contains (Feld);
+--    end loop;
+--    
+--    Cycle_Start := Geschichte.Find_Index (Feld);
+--    
+--    Put_Line ("Zyklus nach" & Natural'Image (Cycle_Start) & " Schritten.");
+--    
+--    Anzahl_Schritte := Natural (Geschichte.Length) - Cycle_Start;
+--    
+--    if Feld = Leer then 
+--    --  if Anzahl_Schritte = 1 then
+--       Geschichte.Clear;
+--       goto Anfang;
+--    end if;
+--    
+--    Put_Line ("Zykluslaenge:" & Natural'Image (Anzahl_Schritte) & " Schritte");
     
---    Put_Line ("Wie viele Folgebelegungen sollen berechnet werden?");
---    Ada.Integer_TeXt_IO.Get (Anzahl_Schritte);
+   Put_Line ("Wie viele Folgebelegungen sollen berechnet werden?");
+   Ada.Integer_Text_IO.Get (Anzahl_Schritte);
 
    for I in 1 .. Anzahl_Schritte loop
       Put_Line (Natural'Image (I) & ". Folgebelegung:");
