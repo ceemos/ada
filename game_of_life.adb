@@ -3,11 +3,12 @@
 --  @Project: Programmieruebungen, Uebungsblatt 7
 --  @Version: 1
 --  @Created: 04. 12. 2011
---  @Author: Marcel Schneider
+--  @Author: Marcel Schneider, Ulrich Zendler, Philipp Klaas
 --
 -------------------------------------------------------------------------------
 --
 --  @Procedure: Game_of_Life
+--  Implementiert das "Spiel des Unilebens"
 --
 
 
@@ -20,19 +21,29 @@ with Ada.Containers.Vectors;
 
 procedure Game_of_Life is
    
+   --  Typ fuer die Zustaende, die ein Platz annehmen kann.
    type Platz is (Frei, Belegt);
    
+   --  Typ fuer alle Indizes die in den Pool zeigen
    --  Ermoeglicht automatisch die Torus-Form
    type Index is mod 8;
    
-   type Pool is array (Index, Index) of Platz;
+   --  Der Pool selbst
+   type Pool is arraY (Index, Index) of Platz;
    
+   --  @Procedure: Put 
+   --
+   --  Gibt die Belegung des Pools graphisch als Text aus.
+   --
+   --  @Parameter: 
+   --   + Feld: Die auzugebende Belegung
+   --  
    procedure Put (Feld : Pool) is
    begin
-      for y in Index loop
-         for x in Index loop
-            case Feld (x, y) is
-               when Frei   => Put (". ");
+      for Y in Index loop
+         for X in Index loop
+            case Feld (X, Y) is
+               when Frei   => Put ("O ");
                when Belegt => Put ("X ");
             end case;
          end loop;
@@ -40,109 +51,123 @@ procedure Game_of_Life is
       end loop;
    end Put;
    
+   --  Zufallsgenerator fuer zufaellig belegte Plaetze.
    package R is new Ada.Numerics.Discrete_Random (Platz);
-   --  G : R.Generator;
+   
+   --  @Procedure: Initiate 
+   --
+   --  Erzeugt eine zufaellige Belegung des Pools.
+   --
+   --  @Parameter: 
+   --   + Feld: Pool, in dem die Belegung gespeichert werden soll.
+   --  
    procedure Initiate (Feld : in out Pool) is
       G : R.Generator;
    begin
       R.Reset (G); 
-      for y in Index loop
-         for x in Index loop
-            Feld (x, y) := R.Random (G);
+      for Y in Index loop
+         for X in Index loop
+            Feld (X, Y) := R.Random (G);
          end loop;
       end loop;
    end Initiate;
    
-   function "+" (left : Integer; right : Platz) return Integer is
+   --  @Function: "+" 
+   --
+   --  Addiert 1 zu einem Integer, falls ein Platz belegt ist, und ermoeglicht 
+   --  so das Zaehlen belegter Plaetze.
+   --
+   --  @Parameter: 
+   --   + Left: Zahl, zu der der Platz dazugezaehlt werden soll.
+   --   + Right: Paltz, der gezaehlt werden soll.
+   --  
+   --  @Return: die Zahl + 1, falls der Platz belegt war, sonst die Zahl.
+   --  
+   function "+" (Left : Integer; Right : Platz) return Integer is
    begin
-      case right is
-         when Frei => return left;
-         when Belegt => return left + 1;
+      case Right is
+         when Frei => return Left;
+         when Belegt => return Left + 1;
       end case;
    end "+";
    
-   function Zaehle_Nachbarn (Feld : Pool; x, y : Index) return Natural is 
+   --  @Function: Zaehle_Nachbarn 
+   --
+   --  Zahlt, wie viele Plaetze in der Umgebung eines Platzes belegt sind.
+   --
+   --  @Parameter: 
+   --   + Feld: Der Pool um den es geht.
+   --   + X: die X-Koordinate des Platzes
+   --   + Y: die Y-Koordinate des Platzes
+   --  
+   --  @Return: die Anzahl belegte Plaetze in der Nachbarschaft.
+   --  
+   function Zaehle_Nachbarn (Feld : Pool; X, Y : Index) return Natural is 
    begin
       --  Felder rechts
-      return 0 + Feld (x + 1, y + 1)
-               + Feld (x + 1, y - 1)
-               + Feld (x + 1, y)
+      return 0 + Feld (X + 1, Y + 1)
+               + Feld (X + 1, Y - 1)
+               + Feld (X + 1, Y)
       --  Felder links
-               + Feld (x - 1, y + 1)
-               + Feld (x - 1, y - 1)
-               + Feld (x - 1, y)
+               + Feld (X - 1, Y + 1)
+               + Feld (X - 1, Y - 1)
+               + Feld (X - 1, Y)
       --  Oben + Unten
-               + Feld (x, y + 1)
-               + Feld (x, y - 1);
+               + Feld (X, Y + 1)
+               + Feld (X, Y - 1);
    end Zaehle_Nachbarn;
       
 
    
+   --  @Procedure: Next 
+   --
+   --  Berechnet die Naechste Belegung eines Pools
+   --
+   --  @Parameter: 
+   --   + Feld: Pool, auf den der Schritt angewandt werden soll.
+   --  
    procedure Next (Feld : in out Pool) is
       Alter_Zustand : Pool := Feld;
       Nachbarn : Natural;
    begin
-      for y in Index loop
-         for x in Index loop
-            Nachbarn := Zaehle_Nachbarn (Alter_Zustand, x, y);
+      for Y in Index loop
+         for X in Index loop
+            Nachbarn := Zaehle_Nachbarn (Alter_Zustand, X, Y);
             case Nachbarn is
-               when 0 => Feld (x, y) := Frei;
+               when 0 => Feld (X, Y) := Frei;
                when 1 => null;  -- keine Aenderung
-               when 2 => Feld (x, y) := Belegt;
-               when others => Feld (x, y) := Frei;
+               when 2 => Feld (X, Y) := Belegt;
+               when others => Feld (X, Y) := Frei;
             end case;
          end loop;
       end loop;
    end Next;
    
-   package Pool_Vectors is new Ada.Containers.Vectors
-     (Element_Type => Pool,
-      Index_Type => Natural);
-   subtype Pools is Pool_Vectors.Vector;
-   use Ada.Containers;
    
-   
-   Anzahl_Schritte : Natural;
-   Cycle_Start : Natural;
-   Geschichte : Pools;
-   Feld : Pool;
-   Leer : Pool := (others => (others => Frei));
 begin
-   <<Anfang>>
-   Initiate (Feld);
-   
-   Put_Line ("Startbelegung:");
-   Put (Feld);
-   
-   loop
-      Geschichte.Append (Feld);
-      Next (Feld);
-      exit when Geschichte.Contains (Feld);
-   end loop;
-   
-   Cycle_Start := Geschichte.Find_Index (Feld);
-   
-   Put_Line ("Zyklus nach" & Natural'Image (Cycle_Start) & " Schritten.");
-   
-   Anzahl_Schritte := Natural (Geschichte.Length) - Cycle_Start;
-   
-   if Anzahl_Schritte = 1 then 
-   --if Feld = Leer then
-      Geschichte.Clear;
-      goto Anfang;
-   end if;
-   
-   Put_Line ("Zykluslaenge:" & Natural'Image (Anzahl_Schritte) & " Schritte");
-    
---    Put_Line ("Wie viele Folgebelegungen sollen berechnet werden?");
---    Ada.Integer_Text_IO.Get (Anzahl_Schritte);
-
-   for I in 1 .. Anzahl_Schritte loop
-      Put_Line (Natural'Image (I) & ". Folgebelegung:");
-      Next (Feld);
+   declare 
+      Anzahl_Schritte : Natural;
+      Feld : Pool;
+   begin 
+      Initiate (Feld);
+      
+      Put_Line ("Startbelegung:");
       Put (Feld);
-      New_Line;
-   end loop;
+      
+      Put_Line ("Wie viele Folgebelegungen sollen berechnet werden?");
+      Ada.Integer_Text_IO.Get (Anzahl_Schritte);
+
+      for I in 1 .. Anzahl_Schritte loop
+         Put_Line (Natural'Image (I) & ". Folgebelegung:");
+         Next (Feld);
+         Put (Feld);
+         New_Line;
+      end loop;
+      
+   exception 
+      when Constraint_Error | Data_Error =>
+         Put_Line ("Bitte geben Sie eine positive Zahl ein!"); 
+   end;
 end Game_of_Life;
 
 --  kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; 
