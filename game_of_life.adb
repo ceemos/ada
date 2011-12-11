@@ -23,7 +23,7 @@ procedure Game_of_Life is
    type Platz is (Frei, Belegt);
    
    --  Ermoeglicht automatisch die Torus-Form
-   type Index is mod 4;
+   type Index is mod 8;
    
    type Pool is array (Index, Index) of Platz;
    
@@ -106,6 +106,7 @@ procedure Game_of_Life is
    Cycle_Start : Natural;
    Geschichte : Pools;
    Feld : Pool;
+   Leer : Pool := (others => (others => Frei));
 begin
    <<Anfang>>
    Initiate (Feld);
@@ -125,7 +126,8 @@ begin
    
    Anzahl_Schritte := Natural (Geschichte.Length) - Cycle_Start;
    
-   if Anzahl_Schritte = 1 then
+   if Anzahl_Schritte = 1 then 
+   --if Feld = Leer then
       Geschichte.Clear;
       goto Anfang;
    end if;
