@@ -20,7 +20,7 @@ procedure Gauss is
 begin
 
    declare 
-      type Matrix_Array is array (1 .. N, 1 .. N) of Rationale_Zahl;
+      type Matrix_Array is array (1 .. N + 1, 1 .. N) of Rationale_Zahl;
       type Matrix is access Matrix_Array; 
       
       procedure Put (Mat : Matrix) is
@@ -31,12 +31,14 @@ begin
                when N => Put ("\");
                when others => Put ("|");
             end case;
-            for X in 1 .. N loop
+            for X in 1 .. N + 1 loop
                Put (Mat (X, Y));
-               if X /= N then
+               case X is
+                  when N => Put ("|");
+                  when N + 1 => null;
+                  when others => Put (",");
                   --  Put (Character'Val (16#09#));
-                  Put (",");
-               end if;
+               end case;
             end loop;
             case Y is
                when 1 => Put ("\");
@@ -51,7 +53,7 @@ begin
       begin
          for Y in 1 .. N loop
             Put_Line ("Geben Sie Werte fuer die" & Y'Img & ". Zeile an"); 
-            for X in 1 .. N loop
+            for X in 1 .. N + 1 loop
                Put_Line ("Geben Sie den" & X'Img & ". Wert an"); 
                Get (Mat (X, Y));
             end loop;
@@ -63,7 +65,7 @@ begin
       begin
          Mat := new Matrix_Array;
          for Y in 1 .. N loop
-            for X in 1 .. N loop
+            for X in 1 .. N + 1 loop
                Set (Mat (X, Y), 0, 1);
             end loop;
          end loop;
@@ -80,7 +82,7 @@ begin
             end if;
             for Zeile in Schritt + 1 .. N loop
                Set (Faktor, Mat (Schritt, Schritt) / Mat (Schritt, Zeile));
-               for Spalte in 1 .. N loop
+               for Spalte in 1 .. N + 1 loop
                   Put ("Schritt: " & Schritt'Img & " Zeile:" & Zeile'Img
                           & " Spalte:" & Spalte'Img & " Faktor:");
                   Put (Faktor);
