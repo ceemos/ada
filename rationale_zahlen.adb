@@ -64,13 +64,22 @@ package body Rationale_Zahlen is
    
    function "/" (Links, Rechts : in Rationale_Zahl) return Rationale_Zahl is
    begin
-      return To_Rationale_Zahl (Links.Zaehler * Rechts.Nenner, 
-                                 Links.Nenner * Rechts.Zaehler);
+      if Rechts > 0 / 1 then
+         return To_Rationale_Zahl (Links.Zaehler * Rechts.Nenner, 
+                                   Links.Nenner * Rechts.Zaehler);
+      elsif Rechts < 0 / 1 then
+         return -To_Rationale_Zahl (Links.Zaehler * Rechts.Nenner, 
+                                    abs (Links.Nenner * Rechts.Zaehler));
+      end if;
    end "/";
    
    procedure Put (Z : in Rationale_Zahl) is
    begin
-      Put ("(" & Z.Zaehler'Img & "/" & Z.Nenner'Img & ")");
+      Put ("(");
+      Ada.Integer_Text_IO.Put (Z.Zaehler, 4);
+      Put ("/");
+      Ada.Integer_Text_IO.Put (Z.Nenner, 4);
+      Put (")");
    end Put;
 
    procedure Get (Z : out Rationale_Zahl) is
