@@ -23,6 +23,9 @@ begin
       type Matrix_Array is array (1 .. N + 1, 1 .. N) of Rationale_Zahl;
       type Matrix is access Matrix_Array; 
       
+      type Vektor_Array is array (1 .. N) of Rationale_Zahl; 
+      type Vektor is access Vektor_Array;
+      
       procedure Put (Mat : Matrix) is
       begin
          for Y in 1 .. N loop
@@ -47,6 +50,18 @@ begin
             end case;
             New_Line;
          end loop;
+      end Put;
+      
+      procedure Put (V : Vektor) is
+      begin
+         Put ("(");
+         for I in 1 .. N loop
+            Put (V (I));
+            if I /= N then 
+               Put (",");
+            end if;
+         end loop;
+         Put (")");
       end Put;
       
       procedure Get (Mat : Matrix) is
@@ -94,6 +109,19 @@ begin
             end loop;
          end loop;
       end Eliminiere;
+      
+      
+      function Setze_Rueckwaerts_Ein (Mat : Matrix) return Vektor is
+         Erg : Vektor;
+      begin
+         Erg := new Vektor_Array;
+         Set (Erg (3), Mat (4, 3) / Mat (3, 3));
+         Set (Erg (2), (Mat (4, 2) - Erg (3) * Mat (3, 2)) / Mat (2, 2));
+         Set (Erg (1), (Mat (4, 1) - Erg (3) * Mat (3, 1) 
+                                   - Erg (2) * Mat (2, 1)) / Mat (1, 1));
+         return Erg;
+      end Setze_Rueckwaerts_Ein;
+         
                
       
       Mat : Matrix := Null_Matrix;
@@ -104,6 +132,7 @@ begin
       Put (Mat);
       Eliminiere (Mat);
       Put (Mat);
+      Put (Setze_Rueckwaerts_Ein (Mat));
    end;
       
 end Gauss;
