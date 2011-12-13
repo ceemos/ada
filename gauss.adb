@@ -98,13 +98,13 @@ begin
             for Zeile in Schritt + 1 .. N loop
                Set (Faktor, Mat (Schritt, Schritt) / Mat (Schritt, Zeile));
                for Spalte in 1 .. N + 1 loop
-                  Put ("Schritt: " & Schritt'Img & " Zeile:" & Zeile'Img
-                          & " Spalte:" & Spalte'Img & " Faktor:");
-                  Put (Faktor);
-                  New_Line;
+--                   Put ("Schritt: " & Schritt'Img & " Zeile:" & Zeile'Img
+--                           & " Spalte:" & Spalte'Img & " Faktor:");
+--                   Put (Faktor);
+--                   New_Line;
                   Set (Mat (Spalte, Zeile), Mat (Spalte, Zeile) * Faktor
                                             - Mat (Spalte, Schritt));
-                  Put (Mat);
+--                   Put (Mat);
                end loop;
             end loop;
          end loop;
@@ -113,12 +113,21 @@ begin
       
       function Setze_Rueckwaerts_Ein (Mat : Matrix) return Vektor is
          Erg : Vektor;
+         Summe_Xi : Rationale_Zahl;
       begin
          Erg := new Vektor_Array;
-         Set (Erg (3), Mat (4, 3) / Mat (3, 3));
-         Set (Erg (2), (Mat (4, 2) - Erg (3) * Mat (3, 2)) / Mat (2, 2));
-         Set (Erg (1), (Mat (4, 1) - Erg (3) * Mat (3, 1) 
-                                   - Erg (2) * Mat (2, 1)) / Mat (1, 1));
+         for Schritt in reverse 1 .. N loop
+            Set (Summe_Xi, 0, 1);
+            for I in Schritt + 1 .. N loop
+               Set (Summe_Xi, Summe_Xi + Erg (I) * Mat (I, Schritt));
+            end loop;
+            Set (Erg (Schritt), 
+                (Mat (4, Schritt) - Summe_Xi) / Mat (Schritt, Schritt));
+--             Set (Erg (3), Mat (4, 3) / Mat (3, 3));
+--             Set (Erg (2), (Mat (4, 2) - Erg (3) * Mat (3, 2)) / Mat (2, 2));
+--             Set (Erg (1), (Mat (4, 1) - Erg (3) * Mat (3, 1) 
+--                                     - Erg (2) * Mat (2, 1)) / Mat (1, 1));
+         end loop;
          return Erg;
       end Setze_Rueckwaerts_Ein;
          
@@ -127,12 +136,31 @@ begin
       Mat : Matrix := Null_Matrix;
       
    begin
-      Put (Mat);
       Get (Mat);
+      Put_Line ("Sie gaben folgende Matrix ein: ");
       Put (Mat);
-      Eliminiere (Mat);
+  
+      begin
+         Eliminiere (Mat);
+      exception
+         when Program_Error =>
+            Put_Line ("Div. durch 0 beim Eliminieren. " &
+                      "Es gibt keine eindeutige Loesung.");
+            Put (Mat);
+            return;
+      end;
+      Put_Line ("Die Zeilen-Stufen-Form lautet: ");
       Put (Mat);
-      Put (Setze_Rueckwaerts_Ein (Mat));
+      Put_Line
+      ("Loesung:");
+      begin
+         Put (Setze_Rueckwaerts_Ein (Mat));
+      exception
+         when Program_Error =>
+            Put_Line ("Div. durch 0 beim Einsetzen. " &
+                      "Es existiert keine Loesung.");
+            return;
+      end;
    end;
       
 end Gauss;
