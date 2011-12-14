@@ -87,7 +87,7 @@ begin
          return Mat;
       end Null_Matrix;
       
-      procedure Eliminiere (Mat : in out Matrix) is 
+      procedure Eliminiere_Iterativ (Mat : in out Matrix) is 
          Faktor : Rationale_Zahl;
       begin
          for Schritt in 1 .. N - 1 loop
@@ -108,7 +108,45 @@ begin
                end loop;
             end loop;
          end loop;
-      end Eliminiere;
+      end Eliminiere_Iterativ;
+      
+      procedure Eliminiere_Rekursiv (Mat : in out Matrix;
+                              I : Natural := 1; J : Natural := 1) is
+      begin
+         if I = N + 1 or J > N then
+            return;
+         end if;
+         if Mat (I, J) = 0 / 1 then
+            for K in I .. N loop
+               if  Mat (K, J) /= 0 / 1 then
+                  for X in 1 .. N + 1 loop
+                     declare
+                        Temp : Rationale_Zahl;
+                     begin
+                        Set (Temp, Mat (X, I));
+                        Set (Mat (X, I), Mat (X, K));
+                        Set (Mat (X, K), Temp);
+                     end;
+                  end loop;
+               end if;
+            end loop;
+         end if;
+         if Mat (I, J) = 0 / 1 then
+            Eliminiere (Mat, I, J + 1);
+            return;
+         end if;
+         declare
+            Faktor : Rationale_Zahl;
+         begin
+            for Y in I .. N loop
+               Set (Faktor, (Mat (Y, J) / Mat (I, J)));
+               for X in 1 .. N + 1 loop
+                  Set (Mat (X, Y), Mat (X, Y) - (Faktor * Mat (X, I)));
+               end loop;
+            end loop;
+         end;
+         Eliminiere (Mat , I + 1, J + 1);
+      end Eliminiere_Rekursiv;
       
       
       function Setze_Rueckwaerts_Ein (Mat : Matrix) return Vektor is
@@ -123,10 +161,6 @@ begin
             end loop;
             Set (Erg (Schritt), 
                 (Mat (4, Schritt) - Summe_Xi) / Mat (Schritt, Schritt));
---             Set (Erg (3), Mat (4, 3) / Mat (3, 3));
---             Set (Erg (2), (Mat (4, 2) - Erg (3) * Mat (3, 2)) / Mat (2, 2));
---             Set (Erg (1), (Mat (4, 1) - Erg (3) * Mat (3, 1) 
---                                     - Erg (2) * Mat (2, 1)) / Mat (1, 1));
          end loop;
          return Erg;
       end Setze_Rueckwaerts_Ein;
@@ -141,7 +175,7 @@ begin
       Put (Mat);
   
       begin
-         Eliminiere (Mat);
+         Eliminiere_Iterativ (Mat);
       exception
          when Constraint_Error =>
             Put_Line ("Div. durch 0 beim Eliminieren. " &
