@@ -143,7 +143,7 @@ begin
       begin
          Eliminiere (Mat);
       exception
-         when Program_Error =>
+         when Constraint_Error =>
             Put_Line ("Div. durch 0 beim Eliminieren. " &
                       "Es gibt keine eindeutige Loesung.");
             Put (Mat);
@@ -156,11 +156,15 @@ begin
       begin
          Put (Setze_Rueckwaerts_Ein (Mat));
       exception
-         when Program_Error =>
+         when Constraint_Error =>
             Put_Line ("Div. durch 0 beim Einsetzen. " &
                       "Es existiert keine Loesung.");
             return;
       end;
+   exception
+      when Data_Error =>
+         Put_Line ("Dieses Programm erwartet nur Zahlen. Bitte geben Sie beim "
+                 & "naechsten mal etwas sinnvolles ein. Gebe auf.");
    end;
       
 end Gauss;
