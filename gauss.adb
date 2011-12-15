@@ -8,6 +8,7 @@
 -------------------------------------------------------------------------------
 --
 --  @Procedure: Gauss
+--  liest eine Beliebige grosse Matrix fuer ein LGS ein und loest das LGS.
 --
 
 
@@ -26,6 +27,13 @@ begin
       type Vektor_Array is array (1 .. N) of Rationale_Zahl; 
       type Vektor is access Vektor_Array;
       
+      --  @Procedure: Put 
+      --
+      --  gibt eine Matrix aus.
+      --
+      --  @Parameter: 
+      --   + Mat: die Matrix.
+      --  
       procedure Put (Mat : Matrix) is
       begin
          for Y in 1 .. N loop
@@ -52,6 +60,13 @@ begin
          end loop;
       end Put;
       
+      --  @Procedure: Put 
+      --
+      --  Gibt einen Vektor aus.
+      --
+      --  @Parameter: 
+      --   + V: der Vektor
+      --  
       procedure Put (V : Vektor) is
       begin
          Put ("(");
@@ -64,6 +79,13 @@ begin
          Put (")");
       end Put;
       
+      --  @Procedure: Get 
+      --
+      --  Liest eine Matrix vom Benutzer ein.
+      --
+      --  @Parameter: 
+      --   + Mat: die Matrix, in der die Werte gespeichert werden sollen.
+      --  
       procedure Get (Mat : Matrix) is
       begin
          for Y in 1 .. N loop
@@ -75,6 +97,12 @@ begin
          end loop;
       end Get;
       
+      --  @Function: Null_Matrix 
+      --
+      --  erzeugt eine neue Matrix und initialisiert sie mit (0/1).
+      --
+      --  @Return: eine Matrix mit Nullen.
+      --
       function Null_Matrix return Matrix is
          Mat : Matrix;
       begin
@@ -87,6 +115,13 @@ begin
          return Mat;
       end Null_Matrix;
       
+      --  @Procedure: Eliminiere_Iterativ 
+      --
+      --  Bringt eine Matrix in Zeilen-Stufen-Form 
+      --
+      --  @Parameter: 
+      --   + Mat: die zu bearbeitende Matrix.
+      --  
       procedure Eliminiere_Iterativ (Mat : in out Matrix) is 
          Faktor : Rationale_Zahl;
       begin
@@ -110,6 +145,15 @@ begin
          end loop;
       end Eliminiere_Iterativ;
       
+      --  @Procedure: Eliminiere_Rekursiv 
+      --
+      --  Bringt eine Matrix in Zeilen-Stufen-Form.
+      --
+      --  @Parameter: 
+      --   + Mat: die zu bearbeitende Matrix.
+      --   + I: die Spalte in der gestartet werden soll.
+      --   + J: die Zeile in der gestartet werden soll.
+      --  
       procedure Eliminiere_Rekursiv (Mat : in out Matrix;
                               I : Natural := 1; J : Natural := 1) is
       begin
@@ -132,7 +176,7 @@ begin
             end loop;
          end if;
          if Mat (I, J) = 0 / 1 then
-            Eliminiere (Mat, I, J + 1);
+            Eliminiere_Rekursiv (Mat, I, J + 1);
             return;
          end if;
          declare
@@ -145,10 +189,19 @@ begin
                end loop;
             end loop;
          end;
-         Eliminiere (Mat , I + 1, J + 1);
+         Eliminiere_Rekursiv (Mat , I + 1, J + 1);
       end Eliminiere_Rekursiv;
       
       
+      --  @Function: Setze_Rueckwaerts_Ein 
+      --
+      --  Berechnet die Lsg. eines LGS aus aus einer Matrix in Zeilen-Stufen-Form
+      --
+      --  @Parameter: 
+      --   + Mat: die Matrix in Zeilen-Stufen-Form
+      --  
+      --  @Return: 
+      --  
       function Setze_Rueckwaerts_Ein (Mat : Matrix) return Vektor is
          Erg : Vektor;
          Summe_Xi : Rationale_Zahl;
@@ -175,7 +228,7 @@ begin
       Put (Mat);
   
       begin
-         Eliminiere_Iterativ (Mat);
+         Eliminiere_Rekursiv (Mat);
       exception
          when Constraint_Error =>
             Put_Line ("Div. durch 0 beim Eliminieren. " &
