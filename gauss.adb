@@ -4,8 +4,6 @@
 --  @Version: 1
 --  @Created: 11. 12. 2011
 --  @Author: Marcel Schneider
---  Compile: gnatmake -g -gnaty3acefhiklmnrpt gauss.adb -largs -ldl
---  Run: export LD_LIBRARY_PATH=.;./gauss
 --
 -------------------------------------------------------------------------------
 --
@@ -16,14 +14,19 @@
 
 with Ada.Text_IO;
 use Ada.Text_IO;
+with Ada.Integer_Text_IO;
+use Ada.Integer_Text_IO;
 with Rationale_Zahlen;
 use Rationale_Zahlen;
 
 procedure Gauss is
-   N : constant := 3;
+   Anzahl_Unbekannte : Natural;
 begin
+   Put_Line ("Geben Sie die Anzahl unbekannte an:");
+   Get (Anzahl_Unbekannte);
 
    declare 
+      N : Natural := Anzahl_Unbekannte;
       type Matrix_Array is array (1 .. N + 1, 1 .. N) of Rationale_Zahl;
       type Matrix is access Matrix_Array; 
       
@@ -40,25 +43,30 @@ begin
       procedure Put (Mat : Matrix) is
       begin
          for Y in 1 .. N loop
-            case Y is
-               when 1 => Put ("/");
-               when N => Put ("\");
-               when others => Put ("|");
-            end case;
+            if Y = 1 then
+               Put ("/");
+            elsif Y = N then
+               Put ("\");
+            else
+               Put ("|");
+            end if;
             for X in 1 .. N + 1 loop
                Put (Mat (X, Y));
-               case X is
-                  when N => Put ("|");
-                  when N + 1 => null;
-                  when others => Put (",");
-                  --  Put (Character'Val (16#09#));
-               end case;
+               if X = N then 
+                  Put ("|");
+               elsif X = N + 1 then
+                  null;
+               else
+                  Put (",");
+               end if;
             end loop;
-            case Y is
-               when 1 => Put ("\");
-               when N => Put ("/");
-               when others => Put ("|");
-            end case;
+            if Y = 1 then
+               Put ("\");
+            elsif Y = N then
+               Put ("/");
+            else
+               Put ("|");
+            end if;
             New_Line;
          end loop;
       end Put;
@@ -121,6 +129,7 @@ begin
       --  @Procedure: Eliminiere_Iterativ 
       --
       --  Bringt eine Matrix in Zeilen-Stufen-Form 
+      --  Verwendet einen Algorithmus, der ohne Rekursion auskommt.
       --
       --  @Parameter: 
       --   + Mat: die zu bearbeitende Matrix.
@@ -148,6 +157,7 @@ begin
       --  @Procedure: Eliminiere_Rekursiv 
       --
       --  Bringt eine Matrix in Zeilen-Stufen-Form.
+      --  Verwendet den in der Aufgabe geg. Algorithmus.
       --
       --  @Parameter: 
       --   + Mat: die zu bearbeitende Matrix.
@@ -214,7 +224,7 @@ begin
                Set (Summe_Xi, Summe_Xi + Erg (I) * Mat (I, Schritt));
             end loop;
             Set (Erg (Schritt), 
-                (Mat (4, Schritt) - Summe_Xi) / Mat (Schritt, Schritt));
+                (Mat (N + 1, Schritt) - Summe_Xi) / Mat (Schritt, Schritt));
          end loop;
          return Erg;
       end Setze_Rueckwaerts_Ein;
@@ -249,11 +259,15 @@ begin
                       "Es existiert keine Loesung.");
             return;
       end;
-   exception
-      when Data_Error =>
-         Put_Line ("Dieses Programm erwartet nur Zahlen. Bitte geben Sie beim "
-                 & "naechsten mal etwas sinnvolles ein. Gebe auf.");
-   end;
+
+   end;   
+exception
+   when Constraint_Error =>
+      Put_Line ("Bitte geben Sie eine sinnvolle Anzahl Unbekannte ein.");
+      Gauss;
+   when Data_Error =>
+      Put_Line ("Dieses Programm erwartet nur Zahlen. Bitte geben Sie beim "
+               & "naechsten mal etwas sinnvolles ein. Gebe auf.");
       
 end Gauss;
 
