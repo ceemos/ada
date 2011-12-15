@@ -15,13 +15,13 @@ package Rationale_Zahlen is
    procedure Set (A : out Rationale_Zahl; B : in Rationale_Zahl);
    procedure Set (Z : out Rationale_Zahl; Zaehler : in Integer; Nenner : in Positive := 1);
 
-   function GGT (A, B : in Natural) return Natural;
-   function KGV (A, B : in Natural) return Natural;
    private
    type Rationale_Zahl is record
       Zaehler : Integer;
       Nenner  : Positive := 1;
    end record;
 
+   function GGT (A, B : in Natural) return Natural;
+   function KGV (A, B : in Natural) return Natural;
    function To_Rationale_Zahl (Zaehler : in Integer; Nenner : in Positive := 1) return Rationale_Zahl;
 end Rationale_Zahlen;

@@ -136,13 +136,9 @@ begin
             for Zeile in Schritt + 1 .. N loop
                Set (Faktor, Mat (Schritt, Schritt) / Mat (Schritt, Zeile));
                for Spalte in 1 .. N + 1 loop
---                   Put ("Schritt: " & Schritt'Img & " Zeile:" & Zeile'Img
---                           & " Spalte:" & Spalte'Img & " Faktor:");
---                   Put (Faktor);
---                   New_Line;
+
                   Set (Mat (Spalte, Zeile), Mat (Spalte, Zeile) * Faktor
                                             - Mat (Spalte, Schritt));
---                   Put (Mat);
                end loop;
             end loop;
          end loop;
@@ -161,13 +157,10 @@ begin
       procedure Eliminiere_Rekursiv (Mat : in out Matrix;
                               I : Natural := 1; J : Natural := 1) is
       begin
-         Put_Line ("elim.: I=" & I'Img & " J=" & J'Img);
-         Put (Mat);
          if I = N + 1 or J > N then
             return;
          end if;
          if Mat (J, I) = 0 / 1 then
-            Put_Line ("TAusche");
             for K in I .. N loop
                if  Mat (J, K) /= 0 / 1 then
                   for X in 1 .. N + 1 loop
@@ -183,7 +176,6 @@ begin
             end loop;
          end if;
          if Mat (J, I) = 0 / 1 then
-            Put_Line ("Rekursiere");
             Eliminiere_Rekursiv (Mat, I, J + 1);
             return;
          end if;
