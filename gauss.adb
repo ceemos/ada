@@ -4,6 +4,8 @@
 --  @Version: 1
 --  @Created: 11. 12. 2011
 --  @Author: Marcel Schneider
+--  Compile: gnatmake -g -gnaty3acefhiklmnrpt gauss.adb -largs -ldl
+--  Run: export LD_LIBRARY_PATH=.;./gauss
 --
 -------------------------------------------------------------------------------
 --
@@ -16,6 +18,7 @@ with Ada.Text_IO;
 use Ada.Text_IO;
 with Rationale_Zahlen;
 use Rationale_Zahlen;
+
 procedure Gauss is
    N : constant := 3;
 begin
@@ -144,6 +147,7 @@ begin
             end loop;
          end loop;
       end Eliminiere_Iterativ;
+     
       
       --  @Procedure: Eliminiere_Rekursiv 
       --
@@ -151,18 +155,21 @@ begin
       --
       --  @Parameter: 
       --   + Mat: die zu bearbeitende Matrix.
-      --   + I: die Spalte in der gestartet werden soll.
-      --   + J: die Zeile in der gestartet werden soll.
+      --   + I: die Zeile in der gestartet werden soll.
+      --   + J: die Spalte in der gestartet werden soll.
       --  
       procedure Eliminiere_Rekursiv (Mat : in out Matrix;
                               I : Natural := 1; J : Natural := 1) is
       begin
+         Put_Line ("elim.: I=" & I'Img & " J=" & J'Img);
+         Put (Mat);
          if I = N + 1 or J > N then
             return;
          end if;
-         if Mat (I, J) = 0 / 1 then
+         if Mat (J, I) = 0 / 1 then
+            Put_Line ("TAusche");
             for K in I .. N loop
-               if  Mat (K, J) /= 0 / 1 then
+               if  Mat (J, K) /= 0 / 1 then
                   for X in 1 .. N + 1 loop
                      declare
                         Temp : Rationale_Zahl;
@@ -175,27 +182,29 @@ begin
                end if;
             end loop;
          end if;
-         if Mat (I, J) = 0 / 1 then
+         if Mat (J, I) = 0 / 1 then
+            Put_Line ("Rekursiere");
             Eliminiere_Rekursiv (Mat, I, J + 1);
             return;
          end if;
          declare
             Faktor : Rationale_Zahl;
          begin
-            for Y in I .. N loop
-               Set (Faktor, (Mat (Y, J) / Mat (I, J)));
+            for Y in I + 1 .. N loop
+               Set (Faktor, (Mat (J, Y) / Mat (J, I)));
                for X in 1 .. N + 1 loop
                   Set (Mat (X, Y), Mat (X, Y) - (Faktor * Mat (X, I)));
                end loop;
             end loop;
          end;
-         Eliminiere_Rekursiv (Mat , I + 1, J + 1);
+         Eliminiere_Rekursiv (Mat, I + 1, J + 1);
       end Eliminiere_Rekursiv;
       
       
       --  @Function: Setze_Rueckwaerts_Ein 
       --
-      --  Berechnet die Lsg. eines LGS aus aus einer Matrix in Zeilen-Stufen-Form
+      --  Berechnet die Lsg. eines LGS aus aus einer Matrix in 
+      --  Zeilen-Stufen-Form
       --
       --  @Parameter: 
       --   + Mat: die Matrix in Zeilen-Stufen-Form

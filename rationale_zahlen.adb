@@ -13,7 +13,17 @@
 
 with Ada.Text_IO, Ada.Integer_Text_IO;
 use Ada.Text_IO;
+with GNAT.Traceback;           use GNAT.Traceback;
+with GNAT.Traceback.Symbolic;  use GNAT.Traceback.Symbolic;
 package body Rationale_Zahlen is
+
+      procedure Call_Stack is
+         Trace  : Tracebacks_Array (1 .. 1000);
+         Length : Natural;
+      begin
+         Call_Chain (Trace, Length);
+         Put_Line (Symbolic_Traceback (Trace (1 .. Length)));
+      end Call_Stack; 
    
    --  @Function: ">" 
    --
@@ -161,6 +171,7 @@ package body Rationale_Zahlen is
                                     abs (Links.Nenner * Rechts.Zaehler));
       end if;
       --  Division durch 0
+      Call_Stack;
       raise Constraint_Error;
    end "/";
    
