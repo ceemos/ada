@@ -1,0 +1,28 @@
+	  ----------
+	  Blatt 8
+	  ----------
+	  Marcel Schneider, Ulrich Zendler, Philipp Klaas
+	  ----------
+	  16. 12 .2011
+
+
+* Aufgabe 1a)
+
+** <<<private>>>
+
+  Deklarationen im <<<private>>> Bereich der Spezifikation sind für Anwender nicht sichtbar. Nur innerhalb des Package Body können solche Funktionen, Prozeduren und Typen verwendet werden.
+
+** <<<limited private>>>
+
+  Als <<<limited private>>> deklarierte Typen können von Anwendern nicht kopiert (z. B. auch als Rückgabewert einer Funktion), zugewiesen, oder verglichen werden. Zudem darf außerhalb des Packages auch nicht direkt mit <<<.>>> auf die Felder des Records zugegriffen werden.
+
+  Nur im Package-Body, der auch auf die privaten Teile zugreifen kann, sind solche Operationen zulässig.
+
+** Folgen für <<<Rationale_Zahlen>>>
+
+  Um Variablen vom Typ <<<Rationale_Zahl>>> Werte zuzuweisen, muss die Procedure <<<Set>>> des Package verwendet werden. werte dieses Typs dürfen auch nicht kopiert werden (wie z. B. wenn eine Variable aus einer Funktion zurückgegeben wird). Dies gilt auch für Array-Elemente. Arrays dieses Typ können gar nicht zugewiesen oder zurückgegeben werden, es sei denn es wird ein Zeigertyp verwendet. Da der Typ <<<Rationale_Zahl>>> <<<private>>> ist, kann das Programm, das den Typ verwendet, nicht direkt auf die Felder <<<Zaehler>>> und <<<Nenner>>> zugreifen. Dies ist wünschenswert, da so z. B. verhindert werden kann, dass ein nicht richtig gekürzter Bruch gespeichert wird.
+
+  Der Vergleich von Variablen des Typs ist allerdings möglich, da der dazu benötigte Operator <<<=>>> im Package überladen wird. (Der Operator <<</=>>> wird automatisch mit definiert).
+
+  Die anderen Operatoren erlauben ein hantieren wie mit anderen numerischen Datentypen, bis auf die fehlende Zuweisung mit <<<:=>>>.
+  
