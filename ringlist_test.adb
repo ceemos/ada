@@ -72,9 +72,14 @@ begin
       
    Put (Stringlist);
    Put (Stringlist2);
---    if Equals (Stringlist, Stringlist2) then
---       Put_Line ("Listen sind gleich");
---    end if;
+   if Equals (Stringlist, Stringlist2) then
+      Put_Line ("Listen sind gleich");
+   end if;
+   Insert (Stringlist, To_Unbounded_String ("1"));
+   Insert (Stringlist, To_Unbounded_String ("2"));
+   if not Equals (Stringlist, Stringlist2) then
+      Put_Line ("Listen sind ungleich");
+   end if;
    Put_Line ("Laenge: " & Size (Stringlist)'Img);
 end Ringlist_Test;
 

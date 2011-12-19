@@ -4,7 +4,8 @@
 --  @Version : 1
 --  @Created : 17. 12. 2011
 --  @Author : Marcel Schneider
---
+-- Compile: gnatmake ringlist_test.adb
+-- Run: ./ringlist_test
 -------------------------------------------------------------------------------
 --
 --
@@ -21,26 +22,31 @@ package body Ringlist is
    
    procedure Insert (L : in List; E : in Element_Type) is
       Temp : Ref_Element;
-      Current : Ref_Element;
+      procedure Insert_In_Order (Element : Ref_Element; Count : Integer) is
+      begin
+         if E < Element.Next.Content or Count = 1 then
+            Temp.Next := Element.Next;
+            Element.Next := Temp;
+            if L.First = Element then
+               L.First := Temp;
+               Put_Line ("Setze First");
+            end if;
+         else
+            Insert_In_Order (Element.Next, Count - 1);
+         end if;
+      end Insert_In_Order;
    begin
-      Temp := L.First;
-      L.First := new Listelement;
-      L.First.Content := E;
-      L.First.Next := Temp;
-      --  Zunaechst mal nicht sortieren
+      Temp := new Listelement;
+      Temp.Content := E;
       --  1. Element der Liste 
-      if Temp = null then
-         L.First.Next := L.First;
+      if L.First = null then
+         L.First := Temp;
+         Temp.Next := Temp;
       else
-         --  Listenende Suchen
-         Current := L.First.Next;
-         while (Current.Next /= Temp) loop
-            Current := Current.Next;
-         end loop;
-      
-         --  Ringschluss reparieren
-         Current.Next := L.First;
+         Insert_In_Order (L.First, L.Size);
       end if;
+      
+      L.Size := L.Size + 1;
       
    end Insert;
       
@@ -48,50 +54,43 @@ package body Ringlist is
    procedure Clear (L : in List) is
    begin
       L.First := null;
+      L.Size := 0;
    end Clear;
    
    
    function Contains (L : in List; E : in Element_Type) return Boolean is
-      Current : Ref_Element;
-   begin
-      if not Is_Empty (L) then
-         Current := L.First;
-         while Current.Next /= L.First loop
-            if Current.Content = E then
-               return True;
-            end if;
-            Current := Current.Next;
-         end loop;
-         if Current.Content = E then
+      function Find (Element : Ref_Element; Count : Natural) return Boolean is
+      begin
+         if Element.Content = E then
             return True;
          end if;
-      end if;
-      return False;
+         return Count > 0 and then Find (Element.Next, Count - 1);
+      end Find;
+   begin
+      return L.First /= null and then Find (L.First, L.Size);
    end Contains;
    
    
    function Equals (L1, L2 : in List) return Boolean is
-      Current_Left, Current_Right : Ref_Element;
-   begin
-      if L1.First = null and L2.First = null then
-         return True;
-      end if;
-      if L1.First = null or L2.First = null then
-         return False;
-      end if;
-      Current_Left := L1.First;
-      Current_Right := L2.First;
-      while Current_Left.Next /= L1.First loop
-         if Current_Left.Content /= Current_Right.Content then
+      function Compare (Element_Left, Element_Right : Ref_Element; 
+                                              Count : Integer) 
+               return Boolean is
+      begin
+         if Count > 0 then
+            return Compare (Element_Left.Next, Element_Right.Next, Count - 1);
+         else 
+            return True;
+         end if;
+         if Element_Left.Content /= Element_Right.Content then
             return False;
          end if;
-         Current_Left := Current_Left.Next;
-         Current_Right := Current_Right.Next;
-      end loop;
-      if Current_Left.Content /= Current_Right.Content then
+      end Compare;
+           
+   begin
+      if L1.Size /= L2.Size then
          return False;
       end if;
-      return True;
+      return Compare (L1.First, L2.First, L1.Size);
    end Equals;
       
    function Is_Empty (L : in List) return Boolean is 
@@ -101,72 +100,58 @@ package body Ringlist is
    
    
    procedure Remove (L : in List; E : in Element_Type) is
-      Current : Ref_Element;
-   begin
-      if not Is_Empty (L) then
-         Current := L.First;
-         --  Vorhergehendes El. suchen
-         while Current.Next /= L.First and Current.Next.Content /= E loop
-            Current := Current.Next;
-         end loop;
-         --  gesuchtes ausschliessen
-         if Current.Next /= Current.Next.Next then
-            if Current.Next = L.First then
+      procedure Find_And_Remove (Element : Ref_Element; Count : Integer) 
+                is
+      begin
+         if Element.Next.Content = E then
+            if Element.Next = L.First then
                --  Sonst gibts eine Schleife deren ende nie mehr zu finden ist
-               L.First := Current.Next.Next;
+               L.First := Element.Next.Next;
             end if;
-            Current.Next := Current.Next.Next;
+            Element.Next := Element.Next.Next;
+            L.Size := L.Size - 1;
          else
-            --  Es gibt nur ein El.
+            if Count >= 0 then
+               Find_And_Remove (Element.Next, Count - 1);
+            end if;
+         end if;
+      end Find_And_Remove;
+   begin
+      if L.Size /= 0 then
+         Find_And_Remove (L.First, L.Size);
+         if L.Size = 0 then
             L.First := null;
          end if;
       end if;
    end Remove;
 
    procedure Remove_All (L : in List; E : in Element_Type) is
-      Current : Ref_Element;
-   begin
-      if not Is_Empty (L) then
-         Current := L.First;
-         --  Vorhergehendes El. suchen
-         while Current.Next /= L.First loop
-            if Current.Next.Content = E then
-               --  gesuchtes ausschliessen
-               if Current.Next /= Current.Next.Next then
-                  if Current.Next = L.First then
-                     --  Sonst gibts eine Schleife deren ende nie mehr zu finden ist
-                     L.First := Current.Next.Next;
-                  end if;
-                  Current.Next := Current.Next.Next;
-               else
-                  --  Es gibt nur ein El.
-                  L.First := null;
-               end if;
+      procedure Find_And_Remove (Element : Ref_Element; Count : Integer) is
+      begin
+         if Element.Next.Content = E then
+            if Element.Next = L.First then
+               --  Sonst gibts eine Schleife deren ende nie mehr zu finden ist
+               L.First := Element.Next.Next;
             end if;
-            Current := Current.Next;
-         end loop;
-         
-         --  Noch das 1. Pruefen
-         if L.First.Content = E then
-            L.First := L.First.Next;
-            Current.Next := L.First;
+            Element.Next := Element.Next.Next;
+            L.Size := L.Size - 1;
+         end if;
+         if Count >= 0 then
+            Find_And_Remove (Element.Next, Count - 1);
+         end if;
+      end Find_And_Remove;
+   begin
+      if L.Size /= 0 then
+         Find_And_Remove (L.First, L.Size);
+         if L.Size = 0 then
+            L.First := null;
          end if;
       end if;
    end Remove_All;
 
    function Size (L : in List) return Natural is
-      Count : Natural := 1;
-      Current : Ref_Element;
    begin
-      if Is_Empty (L) then
-         return 0;
-      end if;
-      Current := L.First;
-      while Current.Next /= L.First loop
-         Current := Current.Next;
-         Count := Count + 1;
-      end loop;
-      return Count;
+      return L.Size;
    end Size;
    
    procedure Put (L : in List) is
