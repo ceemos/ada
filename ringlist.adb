@@ -1,9 +1,9 @@
---  @File: ringlist.adb
+--  @File : ringlist.adb
 --
---  @Project: Programmieruebungen, Uebungsblatt 9
---  @Version: 1
---  @Created: 17. 12. 2011
---  @Author: Marcel Schneider
+--  @Project : Programmieruebungen, Uebungsblatt 9
+--  @Version : 1
+--  @Created : 17. 12. 2011
+--  @Author : Marcel Schneider
 --
 -------------------------------------------------------------------------------
 --
@@ -12,14 +12,14 @@ with Ada.Text_IO;
 use Ada.Text_IO;
 package body Ringlist is
 
-   procedure New_List (L: out List) is
+   procedure New_List (L : out List) is
    begin
       L := new Anchor;
       L.First := null;
       L.Size := 0;
    end New_List;
    
-   procedure Insert (L: in List; E: in Element_Type) is
+   procedure Insert (L : in List; E : in Element_Type) is
       Temp : Ref_Element;
       Current : Ref_Element;
    begin
@@ -27,7 +27,7 @@ package body Ringlist is
       L.First := new Listelement;
       L.First.Content := E;
       L.First.Next := Temp;
-      
+      --  Zunaechst mal nicht sortieren
       --  1. Element der Liste 
       if Temp = null then
          L.First.Next := L.First;
@@ -43,19 +43,64 @@ package body Ringlist is
       end if;
       
    end Insert;
-      --  Zunaechst mal nicht sortieren
       
-   procedure Clear (L: in List) is
+      
+   procedure Clear (L : in List) is
    begin
       L.First := null;
    end Clear;
---    function Contains (L: in List; E: in Element_Type) return Boolean;
---    function Equals (L1, L2: in List) return Boolean;
-   function Is_Empty (L: in List) return Boolean is 
+   
+   
+   function Contains (L : in List; E : in Element_Type) return Boolean is
+      Current : Ref_Element;
+   begin
+      if not Is_Empty (L) then
+         Current := L.First;
+         while Current.Next /= L.First loop
+            if Current.Content = E then
+               return True;
+            end if;
+            Current := Current.Next;
+         end loop;
+         if Current.Content = E then
+            return True;
+         end if;
+      end if;
+      return False;
+   end Contains;
+   
+   
+   function Equals (L1, L2 : in List) return Boolean is
+      Current_Left, Current_Right : Ref_Element;
+   begin
+      if L1.First = null and L2.First = null then
+         return True;
+      end if;
+      if L1.First = null or L2.First = null then
+         return False;
+      end if;
+      Current_Left := L1.First;
+      Current_Right := L2.First;
+      while Current_Left.Next /= L1.First loop
+         if Current_Left.Content /= Current_Right.Content then
+            return False;
+         end if;
+         Current_Left := Current_Left.Next;
+         Current_Right := Current_Right.Next;
+      end loop;
+      if Current_Left.Content /= Current_Right.Content then
+         return False;
+      end if;
+      return True;
+   end Equals;
+      
+   function Is_Empty (L : in List) return Boolean is 
    begin
       return L.First = null;
    end Is_Empty;
-   procedure Remove (L: in List; E: in Element_Type) is
+   
+   
+   procedure Remove (L : in List; E : in Element_Type) is
       Current : Ref_Element;
    begin
       if not Is_Empty (L) then
@@ -64,8 +109,12 @@ package body Ringlist is
          while Current.Next /= L.First and Current.Next.Content /= E loop
             Current := Current.Next;
          end loop;
-         -- gesuchtes ausschliessen
+         --  gesuchtes ausschliessen
          if Current.Next /= Current.Next.Next then
+            if Current.Next = L.First then
+               --  Sonst gibts eine Schleife deren ende nie mehr zu finden ist
+               L.First := Current.Next.Next;
+            end if;
             Current.Next := Current.Next.Next;
          else
             --  Es gibt nur ein El.
@@ -73,10 +122,39 @@ package body Ringlist is
          end if;
       end if;
    end Remove;
-   
---    procedure Remove_All (L: in List; E: in Element_Type);
 
-   function Size (L: in List) return Natural is
+   procedure Remove_All (L : in List; E : in Element_Type) is
+      Current : Ref_Element;
+   begin
+      if not Is_Empty (L) then
+         Current := L.First;
+         --  Vorhergehendes El. suchen
+         while Current.Next /= L.First loop
+            if Current.Next.Content = E then
+               --  gesuchtes ausschliessen
+               if Current.Next /= Current.Next.Next then
+                  if Current.Next = L.First then
+                     --  Sonst gibts eine Schleife deren ende nie mehr zu finden ist
+                     L.First := Current.Next.Next;
+                  end if;
+                  Current.Next := Current.Next.Next;
+               else
+                  --  Es gibt nur ein El.
+                  L.First := null;
+               end if;
+            end if;
+            Current := Current.Next;
+         end loop;
+         
+         --  Noch das 1. Pruefen
+         if L.First.Content = E then
+            L.First := L.First.Next;
+            Current.Next := L.First;
+         end if;
+      end if;
+   end Remove_All;
+
+   function Size (L : in List) return Natural is
       Count : Natural := 1;
       Current : Ref_Element;
    begin
@@ -91,7 +169,7 @@ package body Ringlist is
       return Count;
    end Size;
    
-   procedure Put (L: in List) is
+   procedure Put (L : in List) is
       Current : Ref_Element;
    begin
       Current := L.First;

@@ -10,11 +10,11 @@ package Ringlist is
    procedure New_List (L: out List);
    procedure Insert (L: in List; E: in Element_Type);
    procedure Clear (L: in List);
---    function Contains (L: in List; E: in Element_Type) return Boolean;
---    function Equals (L1, L2: in List) return Boolean;
+   function Contains (L: in List; E: in Element_Type) return Boolean;
+   function Equals (L1, L2: in List) return Boolean;
    function Is_Empty (L: in List) return Boolean;
    procedure Remove (L: in List; E: in Element_Type);
---    procedure Remove_All (L: in List; E: in Element_Type);
+   procedure Remove_All (L: in List; E: in Element_Type);
    function Size (L: in List) return Natural;
    procedure Put (L: in List);
    Empty_List_Error: exception;
