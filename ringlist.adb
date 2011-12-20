@@ -4,7 +4,7 @@
 --  @Version : 1
 --  @Created : 17. 12. 2011
 --  @Author : Marcel Schneider
--- Compile: gnatmake ringlist_test.adb
+-- Compile: gnatmake -g ringlist_test.adb
 -- Run: ./ringlist_test
 -------------------------------------------------------------------------------
 --
@@ -24,15 +24,20 @@ package body Ringlist is
       Temp : Ref_Element;
       procedure Insert_In_Order (Element : Ref_Element; Count : Integer) is
       begin
-         if E < Element.Next.Content or Count = 1 then
+         if (Element.Content < E and E < Element.Next.Content) 
+            or ((Element.Content < E) = (E < Element.Content)) --  istgleich
+            or Count = 1
+            then
+            --  Einfuegen
             Temp.Next := Element.Next;
             Element.Next := Temp;
-            if L.First = Element then
+            
+            --  Kopf Neusetzen, falls kleiner als alle anderen
+            if E < L.First.Content then
                L.First := Temp;
-               Put_Line ("Setze First");
             end if;
-         else
-            Insert_In_Order (Element.Next, Count - 1);
+         else 
+            Insert_In_Order(Element.Next, Count - 1);
          end if;
       end Insert_In_Order;
    begin
@@ -73,16 +78,13 @@ package body Ringlist is
    
    function Equals (L1, L2 : in List) return Boolean is
       function Compare (Element_Left, Element_Right : Ref_Element; 
-                                              Count : Integer) 
-               return Boolean is
+                        Count : Integer) return Boolean is
       begin
          if Count > 0 then
-            return Compare (Element_Left.Next, Element_Right.Next, Count - 1);
+            return Element_Left.Content = Element_Right.Content and then 
+                  Compare (Element_Left.Next, Element_Right.Next, Count - 1);
          else 
             return True;
-         end if;
-         if Element_Left.Content /= Element_Right.Content then
-            return False;
          end if;
       end Compare;
            
@@ -100,8 +102,7 @@ package body Ringlist is
    
    
    procedure Remove (L : in List; E : in Element_Type) is
-      procedure Find_And_Remove (Element : Ref_Element; Count : Integer) 
-                is
+      procedure Find_And_Remove (Element : Ref_Element; Count : Integer) is
       begin
          if Element.Next.Content = E then
             if Element.Next = L.First then
@@ -128,16 +129,22 @@ package body Ringlist is
    procedure Remove_All (L : in List; E : in Element_Type) is
       procedure Find_And_Remove (Element : Ref_Element; Count : Integer) is
       begin
-         if Element.Next.Content = E then
-            if Element.Next = L.First then
-               --  Sonst gibts eine Schleife deren ende nie mehr zu finden ist
-               L.First := Element.Next.Next;
+         --  Leere Liste erkennen
+         if L.Size > 0 then 
+            if Element.Next.Content = E then
+               if Element.Next = L.First then
+                  L.First := Element.Next.Next;
+               end if;
+               
+               L.Size := L.Size - 1;
+               --  Zus. Rekursion weil ein El. uebersprungen wird
+               Find_And_Remove (Element.Next, 0);
+               Element.Next := Element.Next.Next;
+               
             end if;
-            Element.Next := Element.Next.Next;
-            L.Size := L.Size - 1;
-         end if;
-         if Count >= 0 then
-            Find_And_Remove (Element.Next, Count - 1);
+            if Count > 0 then
+               Find_And_Remove (Element.Next, Count - 1);
+            end if;
          end if;
       end Find_And_Remove;
    begin
