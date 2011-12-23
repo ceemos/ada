@@ -4,8 +4,8 @@
 --  @Version : 1
 --  @Created : 17. 12. 2011
 --  @Author : Marcel Schneider
--- Compile: gnatmake -g ringlist_test.adb
--- Run: ./ringlist_test
+--  Compile: gnatmake -g ringlist_test.adb
+--  Run: ./ringlist_test
 -------------------------------------------------------------------------------
 --
 --
@@ -26,8 +26,8 @@ package body Ringlist is
       begin
          if (Element.Content < E and E < Element.Next.Content) 
             or ((Element.Content < E) = (E < Element.Content)) --  istgleich
-            or Count = 1
-            then
+            or Count = 1 
+         then
             --  Einfuegen
             Temp.Next := Element.Next;
             Element.Next := Temp;
@@ -37,10 +37,14 @@ package body Ringlist is
                L.First := Temp;
             end if;
          else 
-            Insert_In_Order(Element.Next, Count - 1);
+            Insert_In_Order (Element.Next, Count - 1);
          end if;
       end Insert_In_Order;
    begin
+      if L = null then
+         raise Empty_List_Error;
+      end if;
+      
       Temp := new Listelement;
       Temp.Content := E;
       --  1. Element der Liste 
@@ -58,6 +62,9 @@ package body Ringlist is
       
    procedure Clear (L : in List) is
    begin
+      if L = null then
+         raise Empty_List_Error;
+      end if;
       L.First := null;
       L.Size := 0;
    end Clear;
@@ -72,6 +79,9 @@ package body Ringlist is
          return Count > 0 and then Find (Element.Next, Count - 1);
       end Find;
    begin
+      if L = null then
+         raise Empty_List_Error;
+      end if;
       return L.First /= null and then Find (L.First, L.Size);
    end Contains;
    
@@ -89,6 +99,9 @@ package body Ringlist is
       end Compare;
            
    begin
+      if L1 = null or L2 = null then
+         raise Empty_List_Error;
+      end if;
       if L1.Size /= L2.Size then
          return False;
       end if;
@@ -118,6 +131,9 @@ package body Ringlist is
          end if;
       end Find_And_Remove;
    begin
+      if L = null then
+         raise Empty_List_Error;
+      end if;
       if L.Size /= 0 then
          Find_And_Remove (L.First, L.Size);
          if L.Size = 0 then
@@ -148,6 +164,9 @@ package body Ringlist is
          end if;
       end Find_And_Remove;
    begin
+      if L = null then
+         raise Empty_List_Error;
+      end if;
       if L.Size /= 0 then
          Find_And_Remove (L.First, L.Size);
          if L.Size = 0 then
@@ -158,12 +177,18 @@ package body Ringlist is
 
    function Size (L : in List) return Natural is
    begin
+      if L = null then
+         raise Empty_List_Error;
+      end if;
       return L.Size;
    end Size;
    
    procedure Put (L : in List) is
       Current : Ref_Element;
    begin
+      if L = null then
+         raise Empty_List_Error;
+      end if;
       Current := L.First;
       while Current /= null and then Current.Next /= L.First loop
          Put (Current.Content);

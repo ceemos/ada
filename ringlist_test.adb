@@ -8,6 +8,7 @@
 -------------------------------------------------------------------------------
 --
 --  @Procedure: Ringlist_Test
+--  Testet die Funktionalitaet der Ringliste
 --
 
 
@@ -37,15 +38,30 @@ procedure Ringlist_Test is
    Stringlist : String_Ringlist.List;
    Stringlist2 : String_Ringlist.List;
 begin
+   begin
+      Insert (Stringlist, To_Unbounded_String ("Hallo"));
+   exception
+      when Empty_List_Error =>
+         Put_Line ("Liste nicht Initialisiert");
+   end;
+   
    New_List (Stringlist);
    New_List (Stringlist2);
    
+   --  Muss 0 sein
    Put_Line ("Laenge: " & Size (Stringlist)'Img);
+   
+   --  Darf keinen Fehler verursachen
    Remove (Stringlist, To_Unbounded_String ("Hallo"));
+   
    Insert (Stringlist, To_Unbounded_String ("es"));
    Insert (Stringlist, To_Unbounded_String ("ich"));
    Insert (Stringlist, To_Unbounded_String ("Hallo"));
+   
+   --  Muss das letzte El. entfernen
    Remove (Stringlist, To_Unbounded_String ("Hallo"));
+   
+   --  Einfuegen an verschiedenen Stellen
    Insert (Stringlist, To_Unbounded_String ("du"));
    Insert (Stringlist, To_Unbounded_String ("ich"));
    Insert (Stringlist, To_Unbounded_String ("un"));
@@ -53,40 +69,50 @@ begin
    Insert (Stringlist, To_Unbounded_String ("Welt"));
    Insert (Stringlist, To_Unbounded_String ("Hallo"));
    Insert (Stringlist, To_Unbounded_String ("ich"));
+   
+   --  1. El. Entfernen
    Remove (Stringlist, To_Unbounded_String ("un"));
-   Insert (Stringlist, To_Unbounded_String ("ich"));
    Remove (Stringlist, To_Unbounded_String ("es"));
    
+   Insert (Stringlist, To_Unbounded_String ("ich"));
+   
+   --  Muss 4 El. entfernen
    Remove_All (Stringlist, To_Unbounded_String ("ich"));
    
-   Put_Line ("Init List2");
-   Insert (Stringlist2, To_Unbounded_String ("Hallo"));
-   Insert (Stringlist2, To_Unbounded_String ("du"));
-   Insert (Stringlist2, To_Unbounded_String ("schoene")); 
-   Insert (Stringlist2, To_Unbounded_String ("Welt"));
-   --  Insert (Stringlist2, To_Unbounded_String ("sehrlange"));
-   --  Insert (Stringlist2, To_Unbounded_String ("kurze"));
-   --  Insert (Stringlist2, To_Unbounded_String ("ich"));
-   --  Insert (Stringlist2, To_Unbounded_String ("i"));
-   --  Insert (Stringlist2, To_Unbounded_String ("es"));
+   --  Testen, ob El. Entfernt wurden
    if Contains (Stringlist, To_Unbounded_String ("ich")) then
       Put_Line ("Schlecht");
    end if;
    if Contains (Stringlist, To_Unbounded_String ("du")) then
       Put_Line ("Gut");
-   end if;   
-      
+   end if;  
+   
+   --  Put_Line ("Init List2");
+   --  Diese Strings sollten auch in Stringlist sein
+   Insert (Stringlist2, To_Unbounded_String ("Hallo"));
+   Insert (Stringlist2, To_Unbounded_String ("du"));
+   Insert (Stringlist2, To_Unbounded_String ("schoene")); 
+   Insert (Stringlist2, To_Unbounded_String ("Welt"));
+   
+   --  Listen ausgeben
    Put (Stringlist);
    New_Line;
    Put (Stringlist2);
+   
+   --  Vergleich Testen
    if Equals (Stringlist, Stringlist2) then
       Put_Line ("Listen sind gleich");
    end if;
+   
+   --  Listen ungleich machen
    Insert (Stringlist, To_Unbounded_String ("1"));
    Insert (Stringlist2, To_Unbounded_String ("2"));
+   --  Testen
    if not Equals (Stringlist, Stringlist2) then
       Put_Line ("Listen sind ungleich");
    end if;
+   
+   --  Muss 5 sein
    Put_Line ("Laenge: " & Size (Stringlist)'Img);
 end Ringlist_Test;
 
