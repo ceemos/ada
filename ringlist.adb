@@ -13,6 +13,13 @@ with Ada.Text_IO;
 use Ada.Text_IO;
 package body Ringlist is
 
+   --  @Procedure: New_List
+   --
+   --  Initialisiert eine Liste.
+   --
+   --  @Parameter: 
+   --   + L: Die Liste
+   --  
    procedure New_List (L : out List) is
    begin
       L := new Anchor;
@@ -20,8 +27,26 @@ package body Ringlist is
       L.Size := 0;
    end New_List;
    
+   --  @Procedure: Insert 
+   --
+   --  Fuegt ein Element in eine Liste ein. Das Element wird so eingefuegt, 
+   --  dass die El. der groesse nach geordnet sind.
+   --
+   --  @Parameter: 
+   --   + L: Die Liste
+   --   + E: Das neue Element
+   --  
    procedure Insert (L : in List; E : in Element_Type) is
       Temp : Ref_Element;
+      --  @Procedure: Insert_In_Order 
+      --
+      --  Geht rekursiv durch die Liste bis die Stlle zum Einsetzen gefunden 
+      --  ist.
+      --
+      --  @Parameter: 
+      --   + Element: Das Aktuelle Element
+      --   + Count: Anzahl der noch folgenden Elemente
+      --  
       procedure Insert_In_Order (Element : Ref_Element; Count : Integer) is
       begin
          if (Element.Content < E and E < Element.Next.Content) 
@@ -60,6 +85,13 @@ package body Ringlist is
    end Insert;
       
       
+   --  @Procedure: Clear 
+   --
+   --  Leert eine Liste
+   --
+   --  @Parameter: 
+   --   + L: die zu leerende Liste
+   --  
    procedure Clear (L : in List) is
    begin
       if L = null then
@@ -70,7 +102,27 @@ package body Ringlist is
    end Clear;
    
    
+   --  @Function: Contains 
+   --
+   --  Prueft, ob ein El. in einer Liste enthalten ist.
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --   + E: das Gesuchte Elemnet
+   --  
+   --  @Return: True, wenn das El. gefunden wurde.
+   --  
    function Contains (L : in List; E : in Element_Type) return Boolean is
+      --  @Function: Find 
+      --
+      --  Prueft rekursiv die folgenden Elemente
+      --
+      --  @Parameter: 
+      --   + Element: das Aktuelle Element
+      --   + Count: die Anzahl noch folgender Elemente
+      --  
+      --  @Return: True, wenn das El. gefunden wurde.
+      --  
       function Find (Element : Ref_Element; Count : Natural) return Boolean is
       begin
          if Element.Content = E then
@@ -86,7 +138,28 @@ package body Ringlist is
    end Contains;
    
    
+   --  @Function: Equals 
+   --
+   --  Vergleicht zwei Listen.
+   --
+   --  @Parameter: 
+   --   + L1: die eine Liste
+   --   + L2: die Andere Liste.
+   --  
+   --  @Return: True, wenn die Listen den selben Inhalt haben.
+   --  
    function Equals (L1, L2 : in List) return Boolean is
+      --  @Function: Compare 
+      --
+      --  vergleicht rekursiv die noch folgenden Elemente
+      --
+      --  @Parameter: 
+      --   + Element_Left: das aktuelle El. der einen Liste
+      --   + Element_Right: das aktuelle El. der anderen Liste
+      --   + Count: die Anzahl noch folgender Elemente
+      --  
+      --  @Return: True, wenn die Listen ab dem aktuellen El. gleich sind.
+      --  
       function Compare (Element_Left, Element_Right : Ref_Element; 
                         Count : Integer) return Boolean is
       begin
@@ -108,13 +181,38 @@ package body Ringlist is
       return Compare (L1.First, L2.First, L1.Size);
    end Equals;
       
+   --  @Function: Is_Empty 
+   --
+   --  Prueft, ob eine Liste Leer ist.
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --  
+   --  @Return: True, wenn die Liste 0 Elemente enthaelt.
+   --  
    function Is_Empty (L : in List) return Boolean is 
    begin
       return L.First = null;
    end Is_Empty;
    
    
+   --  @Procedure: Remove 
+   --
+   --  Entfernt das 1. El. das gleich dem gesuchten ist.
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --   + E: das gesuchte Element
+   --  
    procedure Remove (L : in List; E : in Element_Type) is
+      --  @Procedure: Find_And_Remove 
+      --
+      --  Sucht rekursiv nach dem Element und entfert es.
+      --
+      --  @Parameter: 
+      --   + Element: das Aktuelle Element der Liste
+      --   + Count: die Anzahl noch folgender Elemente
+      --  
       procedure Find_And_Remove (Element : Ref_Element; Count : Integer) is
       begin
          if Element.Next.Content = E then
@@ -142,7 +240,23 @@ package body Ringlist is
       end if;
    end Remove;
 
+   --  @Procedure: Remove_All 
+   --
+   --  Entfernt alle Elmente aus der Liste, die gleich dem ges. Element sind.
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --   + E: das gesuchte Element
+   --  
    procedure Remove_All (L : in List; E : in Element_Type) is
+      --  @Procedure: Find_And_Remove 
+      --
+      --  Sucht rekursiv nach dem Element und entfert es.
+      --
+      --  @Parameter: 
+      --   + Element: das Aktuelle Element der Liste
+      --   + Count: die Anzahl noch folgender Elemente
+      --  
       procedure Find_And_Remove (Element : Ref_Element; Count : Integer) is
       begin
          --  Leere Liste erkennen
@@ -175,6 +289,15 @@ package body Ringlist is
       end if;
    end Remove_All;
 
+   --  @Function: Size 
+   --
+   --  Gibt die Anzahl Elemente in der Lsite zurueck.
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --  
+   --  @Return: die Anzahl Elemente
+   --  
    function Size (L : in List) return Natural is
    begin
       if L = null then
@@ -183,6 +306,13 @@ package body Ringlist is
       return L.Size;
    end Size;
    
+   --  @Procedure: Put 
+   --
+   --  Gibt den Inhalt der Liste aus.
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --  
    procedure Put (L : in List) is
       Current : Ref_Element;
    begin

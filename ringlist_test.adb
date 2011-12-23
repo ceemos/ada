@@ -16,11 +16,31 @@ with Ada.Text_IO, Ada.Strings.Unbounded, Ada.Strings.Unbounded.Text_IO;
 use Ada.Text_IO, Ada.Strings.Unbounded;
 with Ringlist;
 procedure Ringlist_Test is
+   --  @Function: Ist_Kleiner 
+   --
+   --  Vergleicht zwei Unbounded Strings nach der Laenge.
+   --
+   --  @Parameter: 
+   --   + Links: der eine String
+   --   + Rechts: der andere String
+   --  
+   --  @Return: True, wenn der linke String kuerzer als der rechte ist.
+   --  
    function Ist_Kleiner (Links, Rechts : Unbounded_String) return Boolean is
    begin
       return Length (Links) < Length (Rechts);
    end Ist_Kleiner;
    
+   --  @Function: Ist_Gleich 
+   --
+   --  Vergleicht zwie Unbounded Strings
+   --
+   --  @Parameter: 
+   --   + Links: der eine String
+   --   + Rechts: der andere String
+   --  
+   --  @Return: True, wenn beide Strings genau gleich sind
+   --  
    function Ist_Gleich (Links, Rechts : Unbounded_String) return Boolean is
    begin
       return Links = Rechts;
@@ -95,6 +115,7 @@ begin
    Insert (Stringlist2, To_Unbounded_String ("Welt"));
    
    --  Listen ausgeben
+   --  Ausgaben muessen der Laenge nach geordnet sein.
    Put (Stringlist);
    New_Line;
    Put (Stringlist2);
@@ -114,6 +135,12 @@ begin
    
    --  Muss 5 sein
    Put_Line ("Laenge: " & Size (Stringlist)'Img);
+   
+   Clear (Stringlist);
+   if Is_Empty (Stringlist) then
+      --  Muss ausgegeben werden.
+      Put_Line ("Liste wurde geleert.");
+   end if;
 end Ringlist_Test;
 
 --  kate: indent-width 3; indent-mode normal; dynamic-word-wrap on; 
