@@ -42,6 +42,7 @@ procedure Textsuche is
          if Element (haystack, i) = Element (needle, 1) then
          
             --  Pruefen, ob auch die folgenden Zeichen passen.
+            matchedlen := 0;
             for j in 1 .. Length (needle) loop
                if Element (haystack, i + j - 1) = Element (needle, j) then
                   matchedlen := matchedlen + 1;
