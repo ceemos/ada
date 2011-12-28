@@ -97,14 +97,36 @@ procedure Wunschzettel is
       return Anfang;
    end Read;
    
+   function Matches_By_Words (Text, Filter : String) return Boolean is
+      Text_Index : Natural := 1;
+   begin
+      for Filter_Index in Filter'Range loop
+         if Text_Index > Text'Last then
+            return False;
+         elsif Filter (Filter_Index) = Text (Text_Index) then
+            Text_Index := Text_Index + 1;
+         elsif Filter (Filter_Index) = ' ' then
+            while Text_Index <= Text'Last 
+                  and then Text (Text_Index) /= ' ' loop
+               Text_Index := Text_Index + 1;
+            end loop;
+            Text_Index := Text_Index + 1;
+         else
+            return False;
+         end if;
+      end loop;
+      return True;
+   end Matches_By_Words;
+   
    function Matches (Text, Filter : Unbounded_String) return Boolean is
       F : String := To_String (Filter);
-      T : String := To_String (Head (Text, Length (Filter)));
+      T : String := To_String (Text);
    begin
       To_Upper (F);
       To_Upper (T);
-      return F = T;
+      return Matches_By_Words (T, F);
    end Matches;
+   
    
    procedure Print_List (Elemente : Element; 
                    Praefix : String := ""; 
