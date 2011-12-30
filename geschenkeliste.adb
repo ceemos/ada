@@ -105,11 +105,11 @@ procedure Geschenkeliste is
       Current_Counter : Element_Counter := Counter;
    begin
       while Current_Counter.Next /= null loop
+         Current_Counter := Current_Counter.Next;
          if Current_Counter.Name = Name then
             Current_Counter.Count := Current_Counter.Count + 1;
             return;
          end if;
-         Current_Counter := Current_Counter.Next;
       end loop;
       --  Falls das erreicht wird, fehlt der Eintrag
       Current_Counter.Next := new Element_Counter_Record'(null, Name, 1);
