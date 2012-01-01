@@ -25,6 +25,7 @@ procedure Wunschzettel is
    
    type Element is access Element_Record;
    
+   --  Ein Typ fuer alle Listenelemente, Staedte, Kinder wie Wuensche
    type  Element_Record is record
       Next : Element;
       Name : Unbounded_String;
@@ -32,6 +33,15 @@ procedure Wunschzettel is
    end record;
 
    
+   --  @Function: Read 
+   --
+   --  Liest eine Datei im Wunschliste-Format in eine Liste.
+   --
+   --  @Parameter: 
+   --   + File: der Name der Datei
+   --  
+   --  @Return: Das 1. El. der Liste
+   --  
    function Read (File : String) return Element is
       F : File_Type;
       Line : Unbounded_String;
@@ -97,6 +107,18 @@ procedure Wunschzettel is
       return Anfang;
    end Read;
    
+   --  @Function: Matches_By_Words 
+   --
+   --  Vergleicht zwei Strings intelligent: ein Filter passt auf einen Text.
+   --  wenn die Anfangsbuchstaben der Woerter uebereinstimmen.
+   --  z. B. passt "w d st" auf "weil der stadt" oder "t p" auf "timo polowski"
+   --
+   --  @Parameter: 
+   --   + Text: der Text mit den kompletten Woertern
+   --   + Filter: der Filter-String mit den Anfangsbuchstaben
+   --  
+   --  @Return: True, wenn der FIlter passt, sonst False.
+   --  
    function Matches_By_Words (Text, Filter : String) return Boolean is
       Text_Index : Natural := 1;
    begin
@@ -118,6 +140,17 @@ procedure Wunschzettel is
       return True;
    end Matches_By_Words;
    
+   --  @Function: Matches 
+   --
+   --  Prueft, ob ein Filter-String auf ein Elemnet passt. Der Vergleich ist 
+   --  case-insensitive.
+   --
+   --  @Parameter: 
+   --   + Text: Der ganze Text
+   --   + Filter: der Suchtext
+   --  
+   --  @Return: True, wenn der Filter passt.
+   --  
    function Matches (Text, Filter : Unbounded_String) return Boolean is
       F : String := To_String (Filter);
       T : String := To_String (Text);
@@ -127,7 +160,16 @@ procedure Wunschzettel is
       return Matches_By_Words (T, F);
    end Matches;
    
-   
+   --  @Function: Print_List
+   --
+   --  Gibt eine Liste formatiert und gefiltert aus.
+   --
+   --  @Parameter: 
+   --   + Elemente: das Erste El. das ausgegeben werden soll. Kann Stadt, Kind 
+   --     oder Wunsch sein.
+   --   + Praefix: Text, der an Anfang jeder Zeile ausgegeben werden soll.
+   --   + Filter: der Suchtext
+   --
    procedure Print_List (Elemente : Element; 
                    Praefix : String := ""; 
                    Filter : Unbounded_String := To_Unbounded_String ("")) is
@@ -142,6 +184,16 @@ procedure Wunschzettel is
       end loop;
    end Print_List;
    
+   --  @Function: Choose 
+   --
+   --  Laesst den Nutzer ein El. aus einer Liste auswaehlen.
+   --
+   --  @Parameter: 
+   --   + Liste: das 1. El. der Liste
+   --   + Praefix: Text, der vor jeder Zeile ausgegeben werden soll.
+   --  
+   --  @Return: Das gew. El. der Liste, null bei Abbruch.
+   --  
    function Choose (Liste : Element; Praefix : String := "") return Element is
       Eingabe : Character;
       Filter : Unbounded_String;
@@ -187,6 +239,10 @@ procedure Wunschzettel is
       end;
    end Choose;
    
+   --  @Procedure: Wait
+   --
+   --  Wartet, bis der Benutzer eine Taste drueckt.
+   --
    procedure Wait is
       Eingabe : Character;
    begin
@@ -199,9 +255,16 @@ begin
       Current_Kind : Element;
 
    begin
+      Put_Line ("Hinweise: Eintraege aus einer Liste koennen mit einer kurzen "
+              & "Schreibweise gesucht werden, z. B. findet ""w d st"" " 
+              & """Weil der Stadt""." );
+      Put_Line ("<Enter> waehlt immer den 1. passenden Eintrag.");
+                 
       Liste := Read ("wunschliste.txt");
 
+      --  immer wieder
       loop
+         --  Stadt waehlen lassen
          Current_Stadt := Choose (Liste, "- ");
          exit when Current_Stadt = null;
          
@@ -211,10 +274,12 @@ begin
          Put_Line (":");
          
          loop
+            --  Kind waehlen lassen
             Current_Kind := Choose (Current_Stadt.Sub, "  + ");
             exit when Current_Kind = null;
             
             New_Line;
+            --  Wuensche ausgeben
             Put ("Wuensche von ");
             Put (Current_Kind.Name);
             Put_Line (":");

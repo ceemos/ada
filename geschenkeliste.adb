@@ -28,6 +28,8 @@ procedure Geschenkeliste is
    
    type Element_Counter is access Element_Counter_Record;
    
+   --  Spezieller Typ der die Anzahl spez. El. enthaelt.
+   --  Taucht immer als Liste mit mit einem Nullel. als Kopf/Anker auf.
    type Element_Counter_Record is record
       Next : Element_Counter;
       Name : Unbounded_String;
@@ -35,6 +37,15 @@ procedure Geschenkeliste is
    end record;
 
    
+   --  @Function: Read 
+   --
+   --  Liest eine Datei im Wunschliste-Format in eine Liste.
+   --
+   --  @Parameter: 
+   --   + File: der Name der Datei
+   --  
+   --  @Return: Das 1. El. der Liste
+   --  
    function Read (File : String) return Element is
       F : File_Type;
       Line : Unbounded_String;
@@ -100,6 +111,14 @@ procedure Geschenkeliste is
       return Anfang;
    end Read;
    
+   --  @Procedure: Zaehle_Wunsch 
+   --
+   --  Erhoeht den passenden Wert im Counter um eins.
+   --
+   --  @Parameter: 
+   --   + Name: Der Name des Wunsches
+   --   + Counter: der Kopf der Counter-Liste
+   --  
    procedure Zaehle_Wunsch (Name : Unbounded_String; 
                          Counter : in out Element_Counter) is
       Current_Counter : Element_Counter := Counter;
@@ -115,6 +134,14 @@ procedure Geschenkeliste is
       Current_Counter.Next := new Element_Counter_Record'(null, Name, 1);
    end Zaehle_Wunsch;
    
+   --  @Procedure: Zaehle_Stadt 
+   --
+   --  Zaehlt die Wuensche der Kinder einer Stadt in den Counter
+   --
+   --  @Parameter: 
+   --   + Kinder: Das Erste Kind-El. der Stadt. 
+   --   + Counter: der Kopf der Counter-Liste
+   --  
    procedure Zaehle_Stadt (Kinder : Element; 
                           Counter : in out Element_Counter) is
       Current_Kind : Element := Kinder;
@@ -130,6 +157,13 @@ procedure Geschenkeliste is
       end loop;
    end Zaehle_Stadt;
    
+   --  @Procedure: Put 
+   --
+   --  Gibt die Werte in einer Counter-Liste aus.
+   --
+   --  @Parameter: 
+   --   + Counter: der Kopf der Counter-Liste
+   --  
    procedure Put (Counter : Element_Counter) is
       Current_Counter : Element_Counter := Counter.Next;
    begin
@@ -143,7 +177,9 @@ procedure Geschenkeliste is
    
 begin
    declare 
+      --  Counter fuer die Gesamtsumme
       Counter : Element_Counter := 
+            --  Das ist der Kopf der Counter-Liste
             new Element_Counter_Record'(null, To_Unbounded_String (""), 0);
       Liste : Element;
       Current_Stadt : Element;
@@ -152,6 +188,7 @@ begin
       Current_Stadt := Liste;
       while Current_Stadt /= null loop
          declare
+            --  Counter fuer eine Stadt
             Stadt_Counter : Element_Counter :=
                new Element_Counter_Record'(null, To_Unbounded_String (""), 0);
          begin
