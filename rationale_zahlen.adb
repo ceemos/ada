@@ -3,7 +3,7 @@
 --  @Project: Programmieruebungen, Uebungsblatt 8
 --  @Version: 1
 --  @Created: 11. 12. 2011
---  @Author: Marcel Schneider
+--  @Author: Marcel Schneider, Ulrich Zendler, Philipp Klaas
 --
 -------------------------------------------------------------------------------
 --  Enthaelt einen Datentyp fuer rationale Zahlen und die noetigen Operationen 

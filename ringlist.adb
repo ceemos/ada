@@ -3,9 +3,7 @@
 --  @Project : Programmieruebungen, Uebungsblatt 9
 --  @Version : 1
 --  @Created : 17. 12. 2011
---  @Author : Marcel Schneider
---  Compile: gnatmake -g ringlist_test.adb
---  Run: ./ringlist_test
+--  @Author : Marcel Schneider, Ulrich Zendler, Philipp Klaas
 -------------------------------------------------------------------------------
 --
 --

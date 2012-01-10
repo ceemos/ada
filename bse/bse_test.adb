@@ -21,6 +21,17 @@ procedure BSE_Test is
    type Tree_Op is access procedure (Tree : in out BSE_Tree;
                                      Element : in Unbounded_String);
 
+   --  @Procedure: Read 
+   --
+   --  Liest eine Texdatei, zerlegt sie in Worte und ruft fuer jedes Wort 
+   --  etwas auf.
+   --
+   --  @Parameter: 
+   --   + File: der Name der zu lesenden Datei
+   --   + Tree: Baum, der weitergegeben wird
+   --   + Operation: Zeiger auf die aufzurufende Prozedur. Ihr wird das Wort 
+   --       und der Baum uebergeben
+   --  
    procedure Read (File : String; 
                    Tree : in out BSE_Tree; 
                    Operation : Tree_Op) is
@@ -35,7 +46,9 @@ procedure BSE_Test is
          Line := Get_Line (F);
          for I in 1 .. Length (Line) loop
             Current_Char := Element (Line, I);
-            if Current_Char = ' ' then
+            --  Leer, CR und LF
+            if Current_Char = ' ' or Character'Pos (Current_Char) = 10 or
+               Character'Pos (Current_Char) = 13 then
                Operation (Tree, Word);
                Word := To_Unbounded_String ("");
             else
@@ -47,6 +60,14 @@ procedure BSE_Test is
       end loop;
    end Read;
    
+   --  @Procedure: Put_If_In_Tree 
+   --
+   --  Gibt ein Wort aus, wenn es im Baum gefunden wurde.
+   --
+   --  @Parameter: 
+   --   + Tree: Der Baum
+   --   + Element: das Wort
+   --  
    procedure Put_If_In_Tree (Tree : in out BSE_Tree;
                               Element : in Unbounded_String) is
    begin
@@ -62,17 +83,17 @@ begin
       Groesse : Natural;
 
    begin
-      Read ("BSE_Insert.txt", Tree, Insert'Access);
+      Read ("BSE_Insert.txt.lf", Tree, Insert'Access);
       Groesse := Size (Tree);
       Put_Line ("Groesse nach Einfuegen: " & Groesse'Img);
       Put (Tree);
       
-      Read ("BSE_Delete.txt", Tree, Delete'Access);
+      Read ("BSE_Delete.txt_", Tree, Delete'Access);
       Groesse := Size (Tree);
       Put_Line ("Groesse nach Entfernen: " & Groesse'Img);
       Put (Tree);
       
-      Read ("BSE_Find.txt", Tree, Put_If_In_Tree'Access);
+      Read ("BSE_Find.txt_", Tree, Put_If_In_Tree'Access);
 
       
       Clear (Tree);

@@ -21,10 +21,30 @@ use Ada.Text_IO, Ada.Strings.Unbounded.Text_IO;
 
 package body Bucket_Search_Elementary_Tree_Package is
 
+   --  @Function: Find
+   --
+   --  sucht im Baum nach einem Element
+   --
+   --  @Parameter: 
+   --   + T: Der Baum
+   --   + E: Das Element
+   --  
+   --  @Return: true, wenn das Element enthalten ist, sonst false.
+   --  
+
    function Find (T : in BSE_Tree; E : in Unbounded_String) return Boolean is
       --  Vermeidet den Key bei jeder Rek. zu berechnen
       Hash : Integer;
       
+      --  @Function: Find_Recursive 
+      --
+      --  Sucht nach dem Hash-Wert des Elements
+      --
+      --  @Parameter: 
+      --   + Tree: Der Baum
+      --  
+      --  @Return: true wenn das Element enthalten ist.
+      --  
       function Find_Recursive (Tree : BSE_Tree) return Boolean is
       begin
          if Tree = null then
@@ -49,10 +69,25 @@ package body Bucket_Search_Elementary_Tree_Package is
          return False;
    end Find;
    
+   --  @Procedure: Insert 
+   --
+   --  Fuegt ein Element in den Baum ein.
+   --
+   --  @Parameter: 
+   --   + T: der Baum
+   --   + E: das neue Element
+   --  
    procedure Insert (T : in out BSE_Tree; E : in Unbounded_String) is
       --  Vermeidet den Key bei jeder Rek. zu berechnen
       Hash : Integer;
       
+      --  @Procedure: Insert_Recursive 
+      --
+      --  Fuegt ein Element mit bekanntem Hash ein.
+      --
+      --  @Parameter: 
+      --   + Tree: der Baum
+      --  
       procedure Insert_Recursive (Tree : in out BSE_Tree) is
       begin
          if Tree = null then
@@ -80,10 +115,26 @@ package body Bucket_Search_Elementary_Tree_Package is
          null;
    end Insert;
    
+   --  @Procedure: Delete 
+   --
+   --  Sucht ein Element und entfernt es, falls vorhanden, aus dem Baum. Wenn 
+   --  das Element mehrfach eingefuegt wurde, wird die Menge um eins Reduziert. 
+   --
+   --  @Parameter: 
+   --   + T: der Baum
+   --   + E: das Element
+   --  
    procedure Delete (T : in out BSE_Tree; E : in Unbounded_String) is
       --  Vermeidet den Key bei jeder Rek. zu berechnen
       Hash : Integer;
       
+      --  @Procedure: Delete_Recursive 
+      --
+      --  Entfernt ein Element mit bekanntem Hash.
+      --
+      --  @Parameter: 
+      --   + Tree: der Baum
+      --  
       procedure Delete_Recursive (Tree : in out BSE_Tree) is
       begin
          if Tree = null then
@@ -94,7 +145,24 @@ package body Bucket_Search_Elementary_Tree_Package is
             elsif Hash = Tree.Key then
                Delete (Tree.Contents, E);
                if Tree.Contents = null then
-                  Put_Line ("TODO: Delete Node");
+                  declare
+                     Left, Right : BSE_Tree;
+                  begin
+                     Left := Tree.Left;
+                     Right := Tree.Right;
+                     Free (Tree);
+                     --  den Baum Reparieren: den linken Teil hochziehen und 
+                     --  den Rechten ganz rechts in den Linken haengen
+                     if Left = null then
+                        Tree := Right;
+                     else
+                        Tree := Left;
+                        while Left.Right /= null loop
+                           Left := Left.Right;
+                        end loop;
+                        Left.Right := Right;
+                     end if;
+                  end;
                end if;
             else 
                Delete_Recursive (Tree.Right);
@@ -112,11 +180,32 @@ package body Bucket_Search_Elementary_Tree_Package is
          null;
    end Delete;
    
+   --  @Procedure: Clear 
+   --
+   --  Loescht alle Elemente des Baumes.
+   --
+   --  @Parameter: 
+   --   + T: der Baum.
+   --  
    procedure Clear (T : in out BSE_Tree) is
    begin
-      null;
+      if T /= null then
+         Clear (T.Left);
+         Clear (T.Right);
+         Free (T);
+         T := null;
+      end if;
    end Clear;
    
+   --  @Function: Size 
+   --
+   --  Ermittelt die Anzahl verschiedener Elemente im Baum
+   --
+   --  @Parameter: 
+   --   + T: der Baum
+   --  
+   --  @Return: die Anzahl
+   --  
    function Size (T : in BSE_Tree) return Natural is
    begin
       if T = null then
@@ -126,19 +215,35 @@ package body Bucket_Search_Elementary_Tree_Package is
       end if;
    end Size;
    
+   --  @Procedure: Put 
+   --
+   --  gibt den Inhalt des Baumes mit den Zugehörigen Hashwerten aus.
+   --
+   --  @Parameter: 
+   --   + T: der Baum
+   --  
    procedure Put (T : in BSE_Tree) is
    begin
       if T /= null then
          Put (T.Left);
          
-         Put (T.Key'Img & ": ");
+         --  Put (T.Key'Img & ": ");
          Put (T.Contents);
-         New_Line;
          
          Put (T.Right);
       end if;
    end Put;
    
+   --  @Function: Find 
+   --
+   --  FSucht ein El. in einer Wortliste.
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --   + C: das Wort
+   --  
+   --  @Return: true, wenn das Wort enthalten ist.
+   --  
    function Find (L : in Content_List; C : Unbounded_String) return Boolean is
    begin
       if L = null then
@@ -150,6 +255,14 @@ package body Bucket_Search_Elementary_Tree_Package is
       end if; 
    end Find;
    
+   --  @Procedure: Insert 
+   --
+   --  Fuegt ein Wort in eine Wortliste ein.
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --   + C: das Wort
+   --  
    procedure Insert (L : in out Content_List; C : Unbounded_String) is
    begin
       if L = null then
@@ -161,6 +274,14 @@ package body Bucket_Search_Elementary_Tree_Package is
       end if; 
    end Insert;
    
+   --  @Procedure: Delete 
+   --
+   --  Entfernt ein Wort aus einer Wortliste.
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --   + C: das Wort.
+   --  
    procedure Delete (L : in out Content_List; C : Unbounded_String) is
    begin
       if L /= null then
@@ -180,25 +301,53 @@ package body Bucket_Search_Elementary_Tree_Package is
       end if;              
    end Delete;
    
+   --  @Procedure: Clear 
+   --
+   --  Entfernt alle Elemnete aus einer Liste.
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --  
    procedure Clear (L : in out Content_List) is
    begin
-      null;
+      if L /= null then
+         Clear (L.Next);
+         Free (L);
+         L := null;
+      end if;
    end Clear;
    
+   --  @Function: Size 
+   --
+   --  Ermittelt die Anzahl verschiedener Elemente in einer Wortliste.
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --  
+   --  @Return: die Anzahl
+   --  
    function Size (L : in Content_List) return Natural is
    begin
       if L = null then
          return 0; 
       else 
-         return Size (L.Next) + L.Count;
+         return Size (L.Next) + 1;
       end if;
    end Size;
    
+   --  @Procedure: Put 
+   --
+   --  Gibt die Woerter einer Liste mit den zugehoerigen Hashes aus,
+   --
+   --  @Parameter: 
+   --   + L: die Liste
+   --  
    procedure Put (L : in Content_List) is
    begin
       if L /= null then
+         Put (Hash_Key (L.Content)'Img & ": ");
          Put (L.Content);
-         Put (":" & L.Count'Img & ", ");
+         Put_Line (" *" & L.Count'Img & ", ");
          Put (L.Next);
       end if;
    end Put;

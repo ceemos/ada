@@ -3,7 +3,7 @@
 --  @Project: Programmieruebungen, Uebungsblatt 9
 --  @Version: 1
 --  @Created: 17. 12. 2011
---  @Author: Marcel Schneider
+--  @Author: Marcel Schneider, Ulrich Zendler, Philipp Klaas
 --
 -------------------------------------------------------------------------------
 --

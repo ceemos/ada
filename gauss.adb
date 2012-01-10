@@ -3,12 +3,12 @@
 --  @Project: Programmieruebungen, Uebungsblatt 8
 --  @Version: 1
 --  @Created: 11. 12. 2011
---  @Author: Marcel Schneider
+--  @Author: Marcel Schneider, Urich Zendler, Philipp Klaas
 --
 -------------------------------------------------------------------------------
 --
 --  @Procedure: Gauss
---  liest eine Beliebige grosse Matrix fuer ein LGS ein und loest das LGS.
+--  liest eine beliebig grosse Matrix fuer ein LGS ein und loest das LGS.
 --
 
 
@@ -211,7 +211,7 @@ begin
       --  @Parameter: 
       --   + Mat: die Matrix in Zeilen-Stufen-Form
       --  
-      --  @Return: 
+      --  @Return: der Loesungsvektor
       --  
       function Setze_Rueckwaerts_Ein (Mat : Matrix) return Vektor is
          Erg : Vektor;
@@ -242,21 +242,22 @@ begin
          Eliminiere_Rekursiv (Mat);
       exception
          when Constraint_Error =>
-            Put_Line ("Div. durch 0 beim Eliminieren. " &
-                      "Es gibt keine eindeutige Loesung.");
+            Put_Line ("Div. durch 0 beim Eliminieren. "
+                    & "Es gibt keine eindeutige Loesung oder sie kann nicht " 
+                    & "gefunden werden.");
             Put (Mat);
             return;
       end;
       Put_Line ("Die Zeilen-Stufen-Form lautet: ");
       Put (Mat);
-      Put_Line
-      ("Loesung:");
+      Put_Line ("Loesung:");
       begin
          Put (Setze_Rueckwaerts_Ein (Mat));
       exception
          when Constraint_Error =>
-            Put_Line ("Div. durch 0 beim Einsetzen. " &
-                      "Es existiert keine Loesung.");
+            Put_Line ("Div. durch 0 beim Einsetzen. "
+                    & "Es gibt keine eindeutige Loesung oder sie kann nicht " 
+                    & "gefunden werden.");
             return;
       end;
 
