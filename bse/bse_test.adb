@@ -83,17 +83,17 @@ begin
       Groesse : Natural;
 
    begin
-      Read ("BSE_Insert.txt.lf", Tree, Insert'Access);
+      Read ("BSE_Insert.txt", Tree, Insert'Access);
       Groesse := Size (Tree);
       Put_Line ("Groesse nach Einfuegen: " & Groesse'Img);
       Put (Tree);
       
-      Read ("BSE_Delete.txt_", Tree, Delete'Access);
+      Read ("BSE_Delete.txt", Tree, Delete'Access);
       Groesse := Size (Tree);
       Put_Line ("Groesse nach Entfernen: " & Groesse'Img);
       Put (Tree);
       
-      Read ("BSE_Find.txt_", Tree, Put_If_In_Tree'Access);
+      Read ("BSE_Find.txt", Tree, Put_If_In_Tree'Access);
 
       
       Clear (Tree);

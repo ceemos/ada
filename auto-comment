@@ -2,12 +2,17 @@
 <?php
 # Run: ./auto-comment acht_damen.adb
 if (!isset($argv[1])) {
-    
+    echo "Usage: $argv[0] <adb-file> [skip first procedure (=true)]\n";
+    exit(1);
 }
 $ada = file($argv[1], FILE_IGNORE_NEW_LINES);
 $out = array();
 
 $skip_main = true;
+
+if (isset($argv[2])) {
+    $skip_main = $argv[2];
+}
 
 foreach ($ada as $z => $l) {
     // Alle folgenden Zeilen Verschmelzen - wg. LF in Deklarationen
@@ -33,7 +38,7 @@ foreach ($ada as $z => $l) {
         $name = $erg[3];
         $out[] = "$ind--  @$typ: $name";
         $out[] = "$ind--";
-        $out[] = "$ind--  <Text>";
+        $out[] = "$ind--  @Description: ";
         $out[] = "$ind--";
         
         // Parameter
